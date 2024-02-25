@@ -1,281 +1,262 @@
 "use client"
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import React, { useEffect, useRef, useState } from 'react';
-import { BotIcon, Check, Copy, SendIcon, Trash2Icon, User, X} from "lucide-react"
-import { Card, CardDescription, CardHeader } from '@/components/ui/card';
-import { useChat } from 'ai/react';
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-interface Message {
-  message: [] | string;
+import Link from "next/link"
+import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar"
+import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card"
+import { JSX, SVGProps } from "react"
+import { ArrowUp, ExternalLink, HeartPulse } from "lucide-react"
+import  Resources  from "@/components/addsResources"
+import Image from "next/image"
+import  Counsellors  from "@/components/Counsellors"
+export default function Component() {
+  const scrollToSection = (id: string) => {
+    const section = document.getElementById(id);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+  const handleClickSection = (section:string,e: { preventDefault: () => void; } | undefined) => {
+    e?.preventDefault();
+        if(section === 'home'){
+         scrollToSection('home')
+       }
+        if(section === 'resources'){
+          scrollToSection('resources')
+        }
+        if(section === 'contact'){
+          scrollToSection('contact')
+        }
+        if(section === 'counselor'){
+          scrollToSection('counselor')
+        }
+        if(section === 'getStarted'){
+          scrollToSection('getStarted')
+        }
+        return
+
+   }
+  return (
+    <div className="flex flex-col min-h-screen">
+      <header className="flex items-center justify-between bg-transparent
+       opacity-90  px-4 py-4 border-b fixed z-50 top-0 inset-x-0
+        backdrop-filter backdrop-blur-lg
+        dark:bg-neutral-900 dark:border-neutral-800 dark:text-[#f5f5f5]
+        border-neutral-100/10 dark:border-neutral-900/10
+       ">
+        <Link className="flex items-center justify-center" href="#">
+         <HeartPulse className="h-8 w-8 mr-2" />
+          <span className="sr-only">
+            Mental Health
+          </span>
+        </Link>
+        <nav className="ml-auto flex gap-4 sm:gap-6">
+          <a onClick={handleClickSection.bind(null,'home')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
+            Home
+          </a>
+          <a onClick={handleClickSection.bind(null,'resources')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
+            Resources
+          </a>
+          <a onClick={handleClickSection.bind(null,'contact')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
+            Contact
+          </a>
+          <a onClick={handleClickSection.bind(null,'counselor')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
+            Counselors
+          </a>
+          {/* getStarted */}
+          <a 
+          onClick={handleClickSection.bind(null,'getStarted')}
+          className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " >
+           
+              Get Started
+            
+          </a>
+        </nav>
+      </header>
+      <main className="flex-1 relative">
+        <section className="w-full pt-24 dark:bg-neutral-900 
+        dark:text-[#f5f5f5] bg-gradient-to-b from-neutral-900 to-neutral-800/none
+        bg-opacity-40 dark:bg-opacity-50
+        inset-0 
+        transition-all duration-300 ease-in-out
+        backdrop-filter backdrop-blur-lg
+       
+         "
+         style={
+            {
+              backgroundImage: "url('https://res-console.cloudinary.com/dzvtkbjhc/media_explorer_thumbnails/218a3b2a8f398342070bb86d3de053f7/detailed')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              zIndex: -10,
+              paddingTop: "0px",
+              top: "-3px",
+
+
+            }
+         }
+         >
+          <div 
+          id="home"
+          className="container  
+          opacity-90  bg-transparent
+          backdrop-filter backdrop-blur-lg
+          h-[600px] flex items-center justify-center
+            dark:text-[#f5f5f5]
+             sm:pt-28
+       px-4 md:px-6 flex-row">
+            <div className="flex flex-col justify-center space-y-4">
+              {/* mental health */}
+              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+              M E N T A L &nbsp; H E A L T H.
+              </h1>
+              <p className="max-w-[600px] text-gray-900 md:text-xl dark:text-gray-600">
+                Our team of experienced and compassionate counselors are here to help you navigate life's
+                challenges and find the support you need to live a happy and fulfilling life.
+              </p>
+            </div>
+           
+          </div>
+        </section>
+        {/* get started buttons*/}
+        <section
+        id="getStarted"
+         className="w-full py-12 relative md:py-16 lg:py-20 dark:bg-neutral-900 dark:text-[#f5f5f5]">
+          <div className="container bg-grid  flex flex-col gap-y-7 justify-center items-center px-4 md:px-6">
+         <Image
+          src="grid.svg"
+          alt="background"
+          width={1572}
+          height={1572}
+          style={{objectFit: "cover", objectPosition: "center", zIndex: -10, paddingTop: "0px"}}
+          className="absolute  top-0 -z-10 text-transparent"
+          
+        />
+       
+    
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-5xl/none">
+              G E T &nbsp; S T A R T E D
+            </h2>
+            <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+              <Link
+              href={'/chat/ai'}
+               className="w-full sm:w-auto">
+                <span className="w-full sm:w-auto flex items-center justify-center  bg-neutral-900 shadow-2xl rounded-md px-6 py-3 text-white font-medium text-lg/none hover:shadow-lg transition-all duration-300 ease-in-out">
+                <span> Chat with our Ai Counselor</span>
+                <span><ExternalLink className="w-6 h-6 ml-2" /></span>
+                </span>
+              </Link>
+              <a
+              onClick={handleClickSection.bind(null,'counselor')}
+               className="w-full sm:w-auto cursor-pointer" >
+                <span className="w-full sm:w-auto flex items-center justify-center  bg-neutral-900 shadow-2xl rounded-md px-6 py-3 text-white font-medium text-lg/none hover:shadow-lg transition-all duration-300 ease-in-out">
+                  <span>
+                  Book an Appointment
+                  </span>
+                  <span>
+                    <ExternalLink className="w-6 h-6 ml-2" />
+                  </span>
+                </span>
+                
+              </a>
+            </div>
+          </div>
+        </section>
+         
+        <section 
+        id="counselor"
+        className="w-full py-12 md:py-16 lg:py-24">
+         <Counsellors />
+
+        </section>
+        <section 
+        id="resources"
+        className="w-full  py-12 md:py-16 lg:py-24 dark:bg-neutral-900 dark:text-[#f5f5f5]">
+          <Resources />
+          </section>
+        <section
+        id="contact"
+         className="w-full py-12 md:py-16 lg:py-24 dark:bg-neutral-900 dark:text-[#f5f5f5]">
+          <div className="container flex  sm:flex-row flex-col justify-evenly mx-auto gap-x-3  space-x-16 items-center px-4 md:px-6">
+            <div className="flex flex-col justify-center space-y-4">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-5xl/none">
+                A B O U T &nbsp; U S
+              </h2>
+              <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
+                Our priority is to provide the best mental health services to our clients. We are committed to
+                helping you navigate life's challenges and find the support you need to live a happy and
+                fulfilling life.
+              </p>
+            </div>
+            <div className="flex flex-col justify-center space-y-4">
+              <h3 className="text-2xl font-bold tracking-tighter sm:text-3xl xl:text-4xl/none">
+                C O N T A C T &nbsp; I N F O
+              </h3>
+              <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
+                <span className="font-bold">Phone:</span> +1 (555) 555-5555
+              </p>
+              <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
+                <span className="font-bold">Email:</span>
+                <a className="hover:underline underline-offset-2" href="mailto:example@gmail.com">
+                  {" "}
+                    <span>
+                      Mental Health Support
+                    </span>
+                </a>
+              </p>
+            </div>
+          </div>
+          {/* contact */}
+          
+        </section>
+      </main>
+      {/* scrolltotop */}
+      <a
+        onClick={handleClickSection.bind(null,'home')}
+        className="fixed bottom-10
+        bg-gradient-to-r from-neutral-400 to-neutral-500
+        hover:from-neutral-500 hover:to-neutral-400
+         shadow-2xl right-4 z-20 flex items-center justify-center w-12 h-12 rounded-full shadow-neutral-700 cursor-pointer dark:bg-neutral-950 dark:text-white hover:shadow-lg transition-all duration-300 ease-in-out"
+      >
+        <ArrowUp className="w-6 h-6" />
+      </a>
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+        <p className="text-xs text-gray-500 dark:text-gray-400">© 2024 
+        M E N T A L &nbsp; H E A L T H. All rights reserved.</p>
+
+        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+          <Link className="text-xs hover:underline underline-offset-4" href="#">
+            Contact Us
+          </Link>
+          <Link className="text-xs hover:underline underline-offset-4" href="#">
+            Facebook
+          </Link>
+          <Link className="text-xs hover:underline underline-offset-4" href="#">
+            Twitter
+          </Link>
+          <Link className="text-xs hover:underline underline-offset-4" href="#">
+            Instagram
+          </Link>
+        </nav>
+      </footer>
+    </div>
+  )
 }
 
-export default function Component({ handler }: { handler: any }) {
-  const { messages, input, handleInputChange, handleSubmit,setMessages,setInput } = useChat({
-    api: handler,
-  });
-  const messagesRef = useRef<HTMLDivElement | null>(null);
-  const [UserisCopied, setUserIsCopied] = useState(false);
-  const [AssistanceisCopied, setAssistanceIsCopied] = useState(false);
-  const [stressed, setStressed] = useState("I am feeling stressed and anxious.");
-  const [depressed, setDepressed] = useState("I am feeling depressed and lonely.");
-  const handleInitiateChat = (message: string, e:any) => {
-    e.preventDefault();
-    setInput(message);
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e); // Include the event argument in the handleSubmit function call
-    }
-   
-  };
-
-  const handleKeyEnter = (e:any) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e); // Include the event argument in the handleSubmit function call
-    }
-  };
-
-
-
-  useEffect(() => {
-    // Scroll to the bottom of the chat when messages change
-    if (messagesRef.current) {
-      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
-    }
-  }, [messages,
-    input,
-    messagesRef.current?.scrollHeight]);
+function Health(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
-    <section className="flex items-center justify-center min-h-screen flex-col bg-gray-50 dark:bg-gray-900" suppressHydrationWarning>
-      {
-        !messages.length && (
-          <Card className="flex items-center justify-center px-2 py-4 flex-col gap-4">
-            <CardDescription className="text-2xl font-bold text-gray-900 dark:text-gray-50">
-              Chat with our AI advisor
-            </CardDescription>
-            <CardDescription>
-              <CardDescription className="flex gap-2 justify-start items-center max-w-2xl text-gray-900 dark:text-gray-50">
-                This is a mental health AI advisor that can help you with your mental health. It is not a replacement for professional help, but it can be a good starting point for you to get help. Please note that this is a demo and the responses are generated by an AI model. If you are in crisis, please call 911 or go to the nearest emergency room.
-              </CardDescription>
-              
-            </CardDescription>
-            <Card className='grid gap-2 grid-cols-2 p-2'>
-               {/* two mental health issue sample */}
-                <Card className="flex flex-col gap-2 p-2 border border-gray-200 rounded-md shadow-sm">
-                  <CardDescription className="text-lg font-bold text-gray-900 dark:text-gray-50">
-                    Feeling Stressed
-                  </CardDescription>
-                  <CardDescription className="text-gray-900 dark:text-gray-50">
-                   {stressed}
-                  </CardDescription>
-                  <Button
-                    onClick={(e) => { handleInitiateChat(stressed, e) }}
-                    className="rounded-md border flex justify-center items-center gap-x-1 border-gray-200 py-7   bg-gray-900 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
-                  >
-                    <span>Try out</span>
-                    <SendIcon className="w-5 h-5" />
-                  </Button>
-
-
-                  </Card>
-                 {/*  I am feeling depressed and lonely. */}
-                <Card className="flex flex-col gap-2 p-2 border border-gray-200 rounded-md shadow-sm">
-                  <CardDescription className="text-lg font-bold text-gray-900 dark:text-gray-50">
-                    Feeling Depressed
-                  </CardDescription>
-                  <CardDescription className="text-gray-900 dark:text-gray-50">
-                    {depressed}
-                  </CardDescription>
-                  <Button
-                    onClick={(e) => { handleInitiateChat(depressed, e) }}
-                    className="rounded-md border flex justify-center items-center gap-x-1 border-gray-200 py-7   bg-gray-900 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
-                  >
-                    <span>Try out</span>
-                    <SendIcon className="w-5 h-5" />
-                  </Button>
-                  </Card>
-                   
-              </Card>
-             
-          </Card>
-        )
-      }
-     
-    <Card className={`w-full max-w-2xl border overflow-hidden rounded-lg ${messages.length > 0 ? 'border-gray-200 dark:border-gray-800' : "h-0 border-none border-collapse  bg-transparent"}`}>
-    {
-        messages.length > 0 && (
-          <Card className="flex items-center justify-center p-1 flex-col gap-4">
-           
-              <CardDescription className="my-4">
-               Remember: It Okay to not be okay. You are not alone.
-              </CardDescription>
-              
-          
-          </Card>
-        )
-      }
-      <div  ref={(ref) => (messagesRef.current = ref as HTMLDivElement)} className={`flex flex-col max-h-80 sm:mb-1 mb-16 overflow-y-auto ${messages.length > 0 ? 'overflow-y-auto' : 'h-0 border-none border-collapse  bg-transparent'}`}>
-        <div className="p-4 flex-1 grid gap-4 flex-col-reverse"   >
-        {messages.map((m, index) => (
-          <Card 
-          className='p-4 border border-gray-100 flex flex-col  shadow shadow-transparent 
-           ' 
-         
-           key={index}   >
-            {m.role === 'user' ? (
-              <div className="flex justify-end items-center" >
-                <div className="flex flex-col bg-gray-100  rounded-md p-2 items-end shadow-sm">
-                  <div className="p-2  text-gray-900 rounded-md "   >
-                  <Markdown remarkPlugins={[remarkGfm]}  className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
-                    {m.content}
-                    </Markdown>
-
-
-                  </div>
-                  <div className='flex justify-end items-center gap-x-3 px-2  gap-1'>
-                     {/* copy  */}
-                     <div className=" bg-transparent shadow-transparent flex justify-end gap-x-1  ">
-                      <button
-                      
-                        onClick={() => {
-                          navigator.clipboard.writeText(m.content);
-                          setUserIsCopied(true);
-                          setTimeout(() => {
-                            setUserIsCopied(false);
-                          }, 1000);
-                        }}
-                        className=" bg-transparent text-black"
-                      >
-                        {
-                          UserisCopied ? (
-                          <span className="flex items-center ">
-                              <Check className="w-4 h-4" />
-                              
-                            </span>
-                          ) : (
-                              <span className="flex items-center">
-                              <Copy className="w-4 h-4" />
-                             
-                            </span>
-                            
-                          )
-                        }
-                      </button>
-                  </div>
-                  <div className="text-xs  text-black bg-white rounded-full p-1">
-                     {
-                        m.role === "user" && (<User className="w-4 h-4" />)
-
-                     }
-                    </div>  
-
-                   
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex justify-start items-center" >
-                <div className="flex bg-green-200 p-2 rounded-md flex-col items-start shadow-sm" >
-                  <div className="p-2   text-gray-900 rounded-md "  >
-                  <Markdown remarkPlugins={[remarkGfm]}  className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0">
-                    {m.content}
-                    </Markdown>
-                  </div>
-                  <div className='flex justify-start items-center gap-x-3 px-2 gap-1'>
-                  <div className="text-xs  text-black rounded-full bg-white p-1">
-                      {
-                          m.role === "assistant" && (<BotIcon className="w-4 h-4" />)
-  
-                      }
-                    </div>  
-                  <div className=" bg-transparent shadow-transparent flex justify-end gap-x-1 ">
-                      <button
-                      
-                        onClick={() => {
-                          navigator.clipboard.writeText(m.content);
-                          setAssistanceIsCopied(true);
-                          setTimeout(() => {
-                            setAssistanceIsCopied(false);
-                          }, 1000);
-                        }}
-                        className=" bg-transparent text-black"
-                      >
-                        {
-                          AssistanceisCopied ? (
-                          <span className="flex items-center">
-                              <Check className="w-4 h-4" />
-                              
-                            </span>
-                          ) : (
-                              <span className="flex items-center">
-                              <Copy className="w-4 h-4" />
-                             
-                            </span>
-                            
-                          )
-                        }
-                      </button>
-                  </div>
-                    </div>
-                     
-
-
-                </div>
-              </div>
-            )}
-
-            {/* users */}
-
-
-          </Card>
-          ))}
-
-            {/* clear chats */}
-        <Card className="  grid items-center gap-4 shadow shadow-white ">
-          <Button
-            onClick={() => {
-              setMessages([]);
-              setInput("");
-            }}
-            className=" bg-transparent text-black hover:bg-transparent hover:text-black"
-          >
-            <span>Clear</span>
-            <Trash2Icon className="w-5 h-5" />
-          </Button>
-          </Card>
-        </div>
-      
-        <div className="p-4 border-t fixed sm:inset-x-1/4 inset-x-0 sm:mt-1 mt-14 bottom-0 z-20  grid items-center gap-4">
-          <form className=" flex justify-between items-center flex-row gap-1.5 "
-           onSubmit={handleSubmit}
-          >
-            <label className="sr-only" htmlFor="message">
-              Message
-            </label>
-            <Textarea
-              value={input}
-              onChange={handleInputChange}
-              onKeyPress={(e: React.KeyboardEvent<HTMLTextAreaElement>) => handleKeyEnter(e)}
-              className="w-full  min-h-[50px] max-h-max appearance-none resize-none rounded-md border-0 shadow-none peer
-              dark:bg-gray-800 dark:text-gray-50 dark:border-gray-800 dark:focus-visible:ring-gray-300
-              "
-              id="message"
-              placeholder="Type your message..."
-            />
-              <Button
-            type="submit" 
-            className=" rounded-md border flex justify-center items-center gap-x-1 border-gray-200 py-7   bg-gray-900 text-sm font-medium text-gray-50 shadow transition-colors hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
-          >
-           <span>Send</span>
-            <SendIcon className="w-5 h-5" />
-          </Button>
-          </form>
-        
-        </div>
-      </div>
-    </Card>
-  </section>
-  );
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="m12 8v4l2 2" />
+    </svg>
+  )
 }
