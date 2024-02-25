@@ -105,9 +105,10 @@ export default function Component() {
        px-4 md:px-6 flex-row">
             <div className="flex flex-col justify-center space-y-4">
               {/* mental health */}
-              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-              M E N T A L &nbsp; H E A L T H.
-              </h1>
+              <h2 className="text-4xl text-center  font-extrabold tracking-tighter sm:text-5xl xl:text-6xl/none
+               ">
+              BETTER MENTAL HEALTH
+              </h2>
               <p className="max-w-[600px] text-gray-900 md:text-xl dark:text-gray-600">
                 Our team of experienced and compassionate counselors are here to help you navigate life's
                 challenges and find the support you need to live a happy and fulfilling life.

@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { ArrowRight } from "lucide-react";
+import crypto from "crypto";
+
 
 
 interface Counsellors {
@@ -14,7 +16,8 @@ interface Counsellors {
     organization: string;
   }
 export default function Component() {
-    const [counselors, setcounselors] = useState<Counsellors[]>  ([
+    const token = crypto.randomBytes(20).toString('hex');
+  const [counselors, setcounselors] = useState<Counsellors[]>  ([
         {
           id: 1,
           counselor: "John Doe",
@@ -91,18 +94,21 @@ export default function Component() {
                             transition-all duration-500 ease-in-out
                        "
                        style={{objectFit: "cover"}}
-                       src={`https://ui-avatars.com/api/?background=random&name=${counselor.counselor}`} alt={counselor.counselor} />
+                       src={`https://ui-avatars.com/api/?background=random&name=${counselor.counselor}`}
+                       alt={counselor.counselor} />
                         <CardTitle>{counselor.counselor}</CardTitle>
                         <CardDescription>{counselor.specialization}</CardDescription>
                         <CardDescription>{counselor.organization}</CardDescription>
                     </CardHeader>
                     <CardContent>
+                      <a href={`/counselor/${counselor.id}?token=${token}`}>
                         <Button className="w-full
                         flex items-center justify-center
                         " type="submit">
                         <span>Book Appointment</span>
                         <ArrowRight className="h-6 w-6 ml-2" />
                         </Button>
+                        </a>
                     </CardContent>
                     </Card>
                 ))}
