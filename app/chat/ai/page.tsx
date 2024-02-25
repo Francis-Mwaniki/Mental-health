@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowUp, BotIcon, Check, Copy, HomeIcon, SendIcon, Trash2Icon, User, X} from "lucide-react"
+import { ArrowLeft, ArrowUp, BotIcon, Check, Copy, HomeIcon, SendIcon, Trash2Icon, User, X} from "lucide-react"
 import { Card, CardDescription, CardHeader } from '@/components/ui/card';
 import { useChat } from 'ai/react';
 import Markdown from 'react-markdown'
@@ -321,13 +321,13 @@ export default function Component({ handler }: { handler: any }) {
       onClick={() => {
         window.location.href = "/";
       }}
-      className="fixed left-4 bottom-4 z-50  text-gray-50 "
+      className="fixed left-4  top-2  z-50  text-gray-50 "
     >
         
         <TooltipProvider>
   <Tooltip >
-    <TooltipTrigger className=' rounded-full flex-col justify-center items-center m-auto bg-gray-900 p-2'>
-       <span>home</span> <HomeIcon className="w-6 h-6" />
+    <TooltipTrigger className=' rounded-full flex-col justify-center items-center m-auto bg-transparent shadow-md sm:text-white text-black sm:bg-gray-900 p-2'>
+      <ArrowLeft className="w-5 h-5" />
     </TooltipTrigger>
     <TooltipContent>
       <p>
