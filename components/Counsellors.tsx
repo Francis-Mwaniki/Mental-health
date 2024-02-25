@@ -102,11 +102,11 @@ export default function Component() {
                     </CardHeader>
                     <CardContent>
                       <a href={`/counselor/${counselor.id}?token=${token}`}>
-                        <Button className="w-full
+                        <Button className="w-full group
                         flex items-center justify-center
                         " type="submit">
                         <span>Book Appointment</span>
-                        <ArrowRight className="h-6 w-6 ml-2" />
+                        <ArrowRight className="h-6 w-6 ml-2 group-hover:animate-bounce" />
                         </Button>
                         </a>
                     </CardContent>

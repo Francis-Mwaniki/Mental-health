@@ -1,6 +1,10 @@
+"use client";
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
+import React, { use, useEffect } from "react"
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Props = {
     params: {
@@ -23,13 +27,37 @@ interface Counselor{
 };
 
 export default function Component({params}: Props) {
+  const router = useRouter();
     const { id } = params;
+ const [isLoading, setIsLoading] = React.useState<boolean>(true)
+
+useEffect(() => {
+  setIsLoading(true)
+  setTimeout(() => {
+    setIsLoading(false)
+  }, 3000);
+}
+, [id,router,params])
 
 
 
   return (
     <section className="dark:bg-neutral-950 dark:text-white py-7 sm:py-12 items-center m-auto flex justify-center">
-    <Card className="w-full max-w-3xl p-4 md:p-8">
+   {
+        isLoading && (
+          <div className="min-h-screen flex items-center justify-center">
+            <Loader2 className="w-12 h-12 text-blue-800 animate-spin" />
+          </div>
+        )
+   }
+   {
+    !isLoading && (<div className={` ${isLoading ? 'hidden rotate-45' : 'block transform rotate-0'}`}>
+    <Card className="w-full max-w-3xl p-4 md:p-8
+    transition-all duration-500 ease-in-out transform 
+    
+    "
+    
+    >
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="space-y-4 lg:pr-4">
           <div className="flex items-center space-x-4">
@@ -105,6 +133,9 @@ export default function Component({params}: Props) {
         </Link>
       </div>
     </Card>
+    </div>)
+   }
+    
   </section>
   )
 }
