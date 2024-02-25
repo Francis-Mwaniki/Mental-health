@@ -2,12 +2,43 @@
 import Link from "next/link"
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar"
 import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card"
-import { JSX, SVGProps } from "react"
-import { ArrowUp, ExternalLink, HeartPulse } from "lucide-react"
+import { JSX, SVGProps, useEffect, useRef, useState } from "react"
+import { ArrowDownLeftSquare, ArrowRight, ArrowUp, ExternalLink, HeartPulse, LucideFrame } from "lucide-react"
 import  Resources  from "@/components/addsResources"
 import Image from "next/image"
 import  Counsellors  from "@/components/Counsellors"
 export default function Component() {
+  const [selectedText, setSelectedText] = useState<string | null>(null);
+  const [selectedTextPosition, setSelectedTextPosition] = useState<{ x: number; y: number } | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showControlledTooltip, setShowControlledTooltip] = useState(false);
+  const handleSelectionChange = () => {
+    const selection = window.getSelection();
+    if (selection) {
+      const selectedText = selection.toString().trim();
+     
+       setTimeout(() => {
+        setSelectedText(selectedText);
+        setSelectedTextPosition({ x: selection.getRangeAt(0).getBoundingClientRect().left, y: selection.getRangeAt(0).getBoundingClientRect().top });
+        setShowControlledTooltip(true);
+       }
+        , 1000);
+      
+      console.log('Selected text:', selectedText);
+    }
+  };
+
+  const handleSelectionChangeRef = useRef(handleSelectionChange);
+
+  useEffect(() => {
+    // Listen for the selectionchange event
+    document.addEventListener('selectionchange', handleSelectionChangeRef.current);
+
+    // Clean up the event listener when the component is unmounted
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChangeRef.current);
+    };
+  }, []); // Empty dependency array ensures this effect runs only once during mount
   const scrollToSection = (id: string) => {
     const section = document.getElementById(id);
     if (section) {
@@ -16,61 +47,133 @@ export default function Component() {
   };
   const handleClickSection = (section:string,e: { preventDefault: () => void; } | undefined) => {
     e?.preventDefault();
+    const nav = document.getElementById('nav');
         if(section === 'home'){
          scrollToSection('home')
+          nav?.classList.toggle('hidden');
+
        }
         if(section === 'resources'){
           scrollToSection('resources')
+          nav?.classList.toggle('hidden');
         }
         if(section === 'contact'){
           scrollToSection('contact')
+          nav?.classList.toggle('hidden');
         }
         if(section === 'counselor'){
           scrollToSection('counselor')
+          nav?.classList.toggle('hidden');
         }
         if(section === 'getStarted'){
           scrollToSection('getStarted')
+          nav?.classList.toggle('hidden');
         }
         return
 
    }
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="flex items-center justify-between bg-transparent
+      {/* desktop */}
+      <header className="sm:flex hidden items-center justify-between bg-transparent
        opacity-90  px-4 py-4 border-b fixed z-50 top-0 inset-x-0
         backdrop-filter backdrop-blur-lg
         dark:bg-neutral-900 dark:border-neutral-800 dark:text-[#f5f5f5]
         border-neutral-100/10 dark:border-neutral-900/10
        ">
         <Link className="flex items-center justify-center" href="#">
-         <HeartPulse className="h-8 w-8 mr-2" />
+         <LucideFrame className="h-8 w-8 mr-2" />
           <span className="sr-only">
             Mental Health
           </span>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6">
-          <a onClick={handleClickSection.bind(null,'home')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
+          <a onClick={handleClickSection.bind(null,'home')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
             Home
           </a>
-          <a onClick={handleClickSection.bind(null,'resources')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
+          <a onClick={handleClickSection.bind(null,'resources')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
             Resources
           </a>
-          <a onClick={handleClickSection.bind(null,'contact')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
+          <a onClick={handleClickSection.bind(null,'contact')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
             Contact
           </a>
-          <a onClick={handleClickSection.bind(null,'counselor')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
+          <a onClick={handleClickSection.bind(null,'counselor')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
             Counselors
           </a>
           {/* getStarted */}
           <a 
           onClick={handleClickSection.bind(null,'getStarted')}
-          className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " >
+          className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " >
            
               Get Started
             
           </a>
         </nav>
       </header>
+      {/* mobile  */}
+      <header className="sm:hidden flex items-center justify-between bg-transparent
+       opacity-90  px-4 py-4 border-b fixed z-50 top-0 inset-x-0
+        backdrop-filter backdrop-blur-lg
+        dark:bg-neutral-900 dark:border-neutral-800 dark:text-[#f5f5f5]
+        border-neutral-100/10 dark:border-neutral-900/10
+       ">
+        <Link className="flex items-center justify-center" href="#">
+          <LucideFrame className="h-8 w-8 mr-2" />
+          <span className="sr-only">
+            Mental Health
+          </span>
+        </Link>
+        <button
+          aria-label="Open Menu"
+          className="p-2 -mr-2 -mb-2"
+          onClick={() => {
+            const nav = document.getElementById('nav');
+            if (nav) {
+              nav.classList.toggle('hidden');
+            }
+          }}
+        >
+          <svg
+            className="w-6 h-6 text-gray-900 dark:text-[#f5f5f5]"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </header>
+      <nav
+        id="nav"
+        className=" sm:hidden flex flex-col gap-4 items-center justify-center 
+        w-full h-screen bg-neutral-900 opacity-90 fixed  dark:bg-neutral-800 text-white  top-16 left-0 z-40
+        backdrop-filter backdrop-blur-lg
+        transition-all duration-500 ease-in-out
+        "
+      >
+
+
+        <a onClick={handleClickSection.bind(null,'home')} className="text-lg font-medium hover:underline" href="#">
+          Home
+        </a>
+        <a onClick={handleClickSection.bind(null,'resources')} className="text-lg font-medium hover:underline" href="#">
+          Resources
+        </a>
+        <a onClick={handleClickSection.bind(null,'contact')} className="text-lg font-medium hover:underline" href="#">
+          Contact
+        </a>
+        <a onClick={handleClickSection.bind(null,'counselor')} className="text-lg font-medium hover:underline" href="#">
+          Counselors
+        </a>
+        <a 
+        onClick={handleClickSection.bind(null,'getStarted')}
+        className="text-lg font-medium bg-white hover:bg-gray-100 text-black w-full justify-center flex justify-self-center items-center  rounded-md  px-3 py-2 hover:underline transition-all duration-500 " >
+          Get Started
+        </a>
+      </nav>
       <main className="flex-1 relative">
         <section className="w-full pt-24 dark:bg-neutral-900 
         dark:text-[#f5f5f5] bg-gradient-to-b from-neutral-900 to-neutral-800/none
@@ -105,9 +208,10 @@ export default function Component() {
        px-4 md:px-6 flex-row">
             <div className="flex flex-col justify-center space-y-4">
               {/* mental health */}
-              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-              M E N T A L &nbsp; H E A L T H.
-              </h1>
+              <h2 className="text-4xl text-center  font-extrabold tracking-tighter sm:text-5xl xl:text-6xl/none
+               ">
+              BETTER MENTAL HEALTH
+              </h2>
               <p className="max-w-[600px] text-gray-900 md:text-xl dark:text-gray-600">
                 Our team of experienced and compassionate counselors are here to help you navigate life's
                 challenges and find the support you need to live a happy and fulfilling life.
@@ -119,7 +223,7 @@ export default function Component() {
         {/* get started buttons*/}
         <section
         id="getStarted"
-         className="w-full py-12 relative md:py-16 lg:py-20 dark:bg-neutral-900 dark:text-[#f5f5f5]">
+         className="w-full py-16 relative md:py-16 lg:py-20 dark:bg-neutral-900 dark:text-[#f5f5f5]">
           <div className="container bg-grid  flex flex-col gap-y-7 justify-center items-center px-4 md:px-6">
          <Image
           src="grid.svg"
@@ -138,44 +242,56 @@ export default function Component() {
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
               <Link
               href={'/chat/ai'}
-               className="w-full sm:w-auto">
+               className="w-full sm:w-auto group">
                 <span className="w-full sm:w-auto flex items-center justify-center  bg-neutral-900 shadow-2xl rounded-md px-6 py-3 text-white font-medium text-lg/none hover:shadow-lg transition-all duration-300 ease-in-out">
                 <span> Chat with our Ai Counselor</span>
-                <span><ExternalLink className="w-6 h-6 ml-2" /></span>
+                <span><ExternalLink className="w-6 h-6 ml-2
+                group-hover:animate-bounce
+                " /></span>
                 </span>
               </Link>
               <a
               onClick={handleClickSection.bind(null,'counselor')}
-               className="w-full sm:w-auto cursor-pointer" >
+               className="w-full sm:w-auto cursor-pointer group" >
                 <span className="w-full sm:w-auto flex items-center justify-center  bg-neutral-900 shadow-2xl rounded-md px-6 py-3 text-white font-medium text-lg/none hover:shadow-lg transition-all duration-300 ease-in-out">
                   <span>
                   Book an Appointment
                   </span>
                   <span>
-                    <ExternalLink className="w-6 h-6 ml-2" />
+                    <ExternalLink className="w-6 h-6 ml-2
+                    group-hover:animate-bounce
+                    " />
                   </span>
                 </span>
                 
               </a>
+              
             </div>
+            {/* login as a conselor  */}
+            <a href="/auth/login" className="text-sm group text-blue-600  hover:text-blue-700 flex flex-row gap-x-2 rotate-0 hover:rotate-3  scale-90 hover:scale-105 justify-center items-center italic  border-b-2 border-solid hover:border-dashed border-blue-600  hover:border-blue-800 no-underline  font-medium  border-s-orange-700 underline-offset-4">
+              <span>Login as a Counselor </span>
+              <ArrowRight  className="w-6 h-6
+              group-hover:animate-bounce
+              " />
+              </a>
           </div>
         </section>
          
         <section 
         id="counselor"
-        className="w-full py-12 md:py-16 lg:py-24">
+        className="w-full py-16 md:py-16 lg:py-24">
          <Counsellors />
 
         </section>
         <section 
         id="resources"
-        className="w-full  py-12 md:py-16 lg:py-24 dark:bg-neutral-900 dark:text-[#f5f5f5]">
+        className="w-full  py-16 md:py-16 lg:py-24 dark:bg-neutral-900 dark:text-[#f5f5f5]">
           <Resources />
           </section>
         <section
         id="contact"
-         className="w-full py-12 md:py-16 lg:py-24 dark:bg-neutral-900 dark:text-[#f5f5f5]">
-          <div className="container flex  sm:flex-row flex-col justify-evenly mx-auto gap-x-3  space-x-16 items-center px-4 md:px-6">
+         className="w-full py-16 md:py-16 lg:py-24 dark:bg-neutral-900 dark:text-[#f5f5f5]">
+          <div className="sm:container flex  sm:flex-row flex-col sm:justify-evenly justify-center mx-auto gap-x-3  gap-y-3 sm:space-x-16 items-center px-4 md:px-6">
             <div className="flex flex-col justify-center space-y-4">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-5xl/none">
                 A B O U T &nbsp; U S
@@ -195,7 +311,7 @@ export default function Component() {
               </p>
               <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
                 <span className="font-bold">Email:</span>
-                <a className="hover:underline underline-offset-2" href="mailto:example@gmail.com">
+                <a className=" hover:text-gray-400 underline underline-offset-2" href="mailto:example@gmail.com">
                   {" "}
                     <span>
                       Mental Health Support
@@ -218,6 +334,15 @@ export default function Component() {
       >
         <ArrowUp className="w-6 h-6" />
       </a>
+     
+      
+      {
+        selectedText  && selectedTextPosition && (
+          <div className="fixed bottom-4 flex justify-center items-center z-30 right-4 bg-white w-3/4 mx-auto shadow-lg rounded-md px-4 py-2">
+            <p>{selectedText}</p>
+          </div>
+        )
+      }
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <p className="text-xs text-gray-500 dark:text-gray-400">© 2024 
         M E N T A L &nbsp; H E A L T H. All rights reserved.</p>

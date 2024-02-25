@@ -96,11 +96,12 @@ export default function Component() {
                  <a href={resource.url} target="_blank">
                 <Button className="w-full
                 flex items-center justify-center
+                group
                 " type="submit">
                     <span>
                         Download
                     </span>
-                    <Download className="w-6 h-6 ml-2" />
+                    <Download className="group-hover:animate-bounce w-6 h-6 ml-2" />
                 </Button>
                 </a>
                 </CardFooter>
