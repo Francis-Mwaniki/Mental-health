@@ -1,15 +1,28 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/J8WityBTKAM
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
+
 import { CardTitle, CardDescription, CardHeader, CardContent, Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { JSX, SVGProps } from "react"
+import { JSX, SVGProps, useState } from "react"
 
 export default function Component() {
+    const [token, setToken] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+  
+    const handleSubmit = (e: { preventDefault: () => void }) => {
+      e.preventDefault();
+  
+      // Basic validation
+      if (!token || !newPassword || !confirmPassword || newPassword !== confirmPassword) {
+        // Handle validation errors
+        console.error("Validation failed");
+        return;
+      }
+  
+      // Perform password update logic here
+      console.log("Password update logic");
+    };
   return (
     <Card className="mx-auto max-w-md">
       <CardHeader className="space-y-1">

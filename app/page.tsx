@@ -12,33 +12,33 @@ export default function Component() {
   const [selectedTextPosition, setSelectedTextPosition] = useState<{ x: number; y: number } | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [showControlledTooltip, setShowControlledTooltip] = useState(false);
-  const handleSelectionChange = () => {
-    const selection = window.getSelection();
-    if (selection) {
-      const selectedText = selection.toString().trim();
+  // const handleSelectionChange = () => {
+  //   const selection = window.getSelection();
+  //   if (selection) {
+  //     const selectedText = selection.toString().trim();
      
-       setTimeout(() => {
-        setSelectedText(selectedText);
-        setSelectedTextPosition({ x: selection.getRangeAt(0).getBoundingClientRect().left, y: selection.getRangeAt(0).getBoundingClientRect().top });
-        setShowControlledTooltip(true);
-       }
-        , 1000);
+  //      setTimeout(() => {
+  //       setSelectedText(selectedText);
+  //       setSelectedTextPosition({ x: selection.getRangeAt(0).getBoundingClientRect().left, y: selection.getRangeAt(0).getBoundingClientRect().top });
+  //       setShowControlledTooltip(true);
+  //      }
+  //       , 1000);
       
-      console.log('Selected text:', selectedText);
-    }
-  };
+  //     console.log('Selected text:', selectedText);
+  //   }
+  // };
 
-  const handleSelectionChangeRef = useRef(handleSelectionChange);
+  // const handleSelectionChangeRef = useRef(handleSelectionChange);
 
-  useEffect(() => {
-    // Listen for the selectionchange event
-    document.addEventListener('selectionchange', handleSelectionChangeRef.current);
+  // useEffect(() => {
+  //   // Listen for the selectionchange event
+  //   document.addEventListener('selectionchange', handleSelectionChangeRef.current);
 
-    // Clean up the event listener when the component is unmounted
-    return () => {
-      document.removeEventListener('selectionchange', handleSelectionChangeRef.current);
-    };
-  }, []); // Empty dependency array ensures this effect runs only once during mount
+  //   // Clean up the event listener when the component is unmounted
+  //   return () => {
+  //     document.removeEventListener('selectionchange', handleSelectionChangeRef.current);
+  //   };
+  // }, []); // Empty dependency array ensures this effect runs only once during mount
   const scrollToSection = (id: string) => {
     const section = document.getElementById(id);
     if (section) {
@@ -185,7 +185,7 @@ export default function Component() {
          "
          style={
             {
-              backgroundImage: "url('https://res-console.cloudinary.com/dzvtkbjhc/media_explorer_thumbnails/218a3b2a8f398342070bb86d3de053f7/detailed')",
+              backgroundImage: "url('./bg.jpg')",
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
@@ -336,13 +336,13 @@ export default function Component() {
       </a>
      
       
-      {
+      {/* {
         selectedText  && selectedTextPosition && (
           <div className="fixed bottom-4 flex justify-center items-center z-30 right-4 bg-white w-3/4 mx-auto shadow-lg rounded-md px-4 py-2">
             <p>{selectedText}</p>
           </div>
         )
-      }
+      } */}
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <p className="text-xs text-gray-500 dark:text-gray-400">© 2024 
         M E N T A L &nbsp; H E A L T H. All rights reserved.</p>
