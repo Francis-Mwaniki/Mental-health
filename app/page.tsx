@@ -307,7 +307,7 @@ export default function Component() {
                 C O N T A C T &nbsp; I N F O
               </h3>
               <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
-                <span className="font-bold">Phone:</span> +1 (555) 555-5555
+                <span className="font-bold">Phone:</span> +254 (112845600)
               </p>
               <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
                 <span className="font-bold">Email:</span>
