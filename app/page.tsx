@@ -213,7 +213,7 @@ export default function Component() {
               BETTER MENTAL HEALTH
               </h2>
               <p className="max-w-[600px] text-gray-900 md:text-xl dark:text-gray-600">
-                Our team of experienced and compassionate counselors are here to help you navigate life's
+                Our team of experienced and compassionate counselors are here to help you navigate life&apos;s
                 challenges and find the support you need to live a happy and fulfilling life.
               </p>
             </div>
@@ -298,7 +298,7 @@ export default function Component() {
               </h2>
               <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
                 Our priority is to provide the best mental health services to our clients. We are committed to
-                helping you navigate life's challenges and find the support you need to live a happy and
+                helping you navigate life&apos;s challenges and find the support you need to live a happy and
                 fulfilling life.
               </p>
             </div>
