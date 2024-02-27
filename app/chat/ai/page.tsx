@@ -18,9 +18,9 @@ interface Message {
   message: [] | string;
 }
 
-export default function Component({ handler }: { handler: any }) {
+export default function Component() {
   const { messages, input, handleInputChange, handleSubmit,setMessages,setInput } = useChat({
-    api: handler,
+    api: "/api/chat",
   });
   const messagesRef = useRef<HTMLDivElement | null>(null);
   const [UserisCopied, setUserIsCopied] = useState(false);
