@@ -49,7 +49,9 @@ export default function Component() {
           toast.success(data.message);
           localStorage.setItem("token", data.token);
           localStorage.setItem("user", JSON.stringify(data.user));
+          localStorage.removeItem("username")
           localStorage.setItem("conselor", 'true');
+          localStorage.setItem("counselorName", data.user.firstName + " " + data.user.lastName);
          window.location.href = `/counselor/${data.user.id}?token=${token}?counselor=${counselor}`;
 
           

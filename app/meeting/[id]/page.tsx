@@ -17,6 +17,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { SelectProps } from "@radix-ui/react-select";
+import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 
 
 type Props = {
@@ -26,10 +28,12 @@ type Props = {
 }
 
 export default function Home({params}:Props) {
+  const router = useRouter();
   const {id} = params;
   const [showChat, setShowChat] = useState(false);
   const [userName, setUserName] = useState("");
   const [showSpinner, setShowSpinner] = useState(false);
+  const [counselorName, setCounselorName] = useState("");
   const [roomId, setRoomId] = useState("");
   const [generatedRoomId, setGeneratedRoomId] = useState("");
   const [messages, setMessages] = useState<number>(50); 
@@ -101,21 +105,39 @@ export default function Home({params}:Props) {
   };
 
   useEffect(() => {
-    let user = localStorage.getItem("user");
+    let user = localStorage.getItem("username");
+    let counselorName = localStorage.getItem("counselorName");
     let isExpert = localStorage.getItem("isExpert");
 
     if (user ) {
       setUserName(user);
     }
+    if (counselorName) {
+      setCounselorName(counselorName);
+    }
+
   }
   , [
     userName,
+    counselorName,
+    router
   ]);
+
+  const theCurrentUser = () => {
+    if (userName) {
+      setUserName(userName);
+    }
+    if (counselorName) {
+      setCounselorName(counselorName);
+   
+    }
+  }
+
 
   const socket = io("https://soket-9qe7.onrender.com");
 
   const handleJoin = () => {
-    if (userName !== "" && roomId !== "") {
+    if (userName !== "" || counselorName !== "" && roomId !== "") {
       console.log(userName, "userName", roomId, "roomId");
       socket.emit("join_room", roomId);
       setShowSpinner(true);
@@ -160,14 +182,17 @@ export default function Home({params}:Props) {
         !showChat && (
           <div className="mb-4 flex flex-col justify-center items-center min-h-screen">
         {
-          userName === "" && (
+          userName === "" && counselorName === "" && (
             <a 
             className="
             cursor-pointer
             text-white px-9 py-2 rounded-lg bg-black
             transition duration-300 ease-in-out hover:bg-gray-800
             "
-             onClick={() => setUserName("User")}>
+            onClick={
+              theCurrentUser
+            }
+             >
                 Join Session 
             </a>
           )
@@ -177,7 +202,8 @@ export default function Home({params}:Props) {
             <>
 
               <h3 className="text-2xl font-bold mb-4">
-            {userName ? `Welcome ${userName}` : "Welcome, Join a chat room"}
+            {userName ? `Welcome ${userName  || counselorName}` : "Welcome, Join a chat room"}
+           
           </h3>
           <p className="text-sm text-gray-500 mb-4">
             click the button below to join a chat room
@@ -207,6 +233,49 @@ export default function Home({params}:Props) {
           </Button>
         </div>
             </>
+
+          )
+        }
+
+        {
+          counselorName !== "" && (
+            <>
+
+            <h3 className="text-2xl font-bold mb-4">
+          {counselorName ? `Welcome ${counselorName}` : "Welcome, Join a chat room"}
+         
+        </h3>
+        <span className=" text-gray-500 mb-4 text-2xl">
+          counselor&apos;s panel
+        </span>
+        <p className="text-sm text-gray-500 mb-4">
+          click the button below to join a chat room
+        </p>
+      
+         <div className="mb-4 text-center flex flex-row justify-center items-center">
+      
+        <Input
+          className="border hidden p-2 rounded-lg mr-2 text-black"
+          type="text"
+          readOnly
+          hidden={true}
+          placeholder="Room Id"
+          onChange={(e) => setRoomId(e.target.value)}
+          value={roomId}
+          disabled={showSpinner}
+        />
+        <Button
+          className=" text-white px-4 py-2 rounded-lg"
+          onClick={handleJoin}
+          disabled={showSpinner}
+        >
+          {!showSpinner ? (<>
+          <span>Join Room Counselor</span>
+          <MessageSquareText size={16} className="ml-2" />
+          </>) : "Loading..."}
+        </Button>
+      </div>
+          </>
           )
         }
          
@@ -270,7 +339,7 @@ export default function Home({params}:Props) {
          <div style={{ display: showChat ? "block" : "none" }}>
           {
             messageCount > 0 && (
-                <ChatPage onMessageSent={handleMessageSent} socket={socket} roomId={roomId} username={userName} />
+                <ChatPage onMessageSent={handleMessageSent} socket={socket} roomId={roomId} username={userName || counselorName} />
             )
           }
         

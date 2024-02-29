@@ -45,6 +45,12 @@ export default function Component() {
       section.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  useEffect(() => {
+    localStorage.setItem('username', 'Guest');
+  }
+  , []);
+
   const handleClickSection = (section:string,e: { preventDefault: () => void; } | undefined) => {
     e?.preventDefault();
     const nav = document.getElementById('nav');

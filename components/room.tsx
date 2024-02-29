@@ -48,6 +48,7 @@ const ChatPage = ({ socket, username, roomId , onMessageSent}: RoomProps) => {
   const logout = () => {
     
     localStorage.removeItem('user');
+    localStorage.removeItem('counselorName');
     localStorage.removeItem('token');
     localStorage.removeItem('roomId');
     localStorage.removeItem('id');
@@ -129,6 +130,7 @@ const ChatPage = ({ socket, username, roomId , onMessageSent}: RoomProps) => {
                 </p>
               </div>
             </li> )}
+            
                <li className="flex items-center p-4 hover:transition-all hover:bg-gray-200 cursor-pointer rounded">
               <a onClick={logout} className="cursor-pointer flex items-center justify-center gap-x-3 mx-3 ">
                 <LogOut className="h-6 w-6 mr-4" />
