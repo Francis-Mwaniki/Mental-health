@@ -161,10 +161,10 @@ export default function Home({params}:Props) {
 
     }
   };
-  useEffect(() => {
-    localStorage.setItem('username', 'Guest');
-  }
-  , []);
+  // useEffect(() => {
+  //   localStorage.setItem('username', 'Guest');
+  // }
+  // , []);
 
   useEffect(() => {
     if(id){
