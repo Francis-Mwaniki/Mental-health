@@ -187,15 +187,14 @@ export default function Home({params}:Props) {
           <div className="mb-4 flex flex-col justify-center items-center min-h-screen">
         {
           userName === "" && counselorName === "" && (
+            /* users propmt to enter their names */
             <a 
             className="
             cursor-pointer
             text-white px-9 py-2 rounded-lg bg-black
             transition duration-300 ease-in-out hover:bg-gray-800
             "
-            onClick={
-              theCurrentUser
-            }
+            onClick={() => setUserName("Guest")}
              >
                 Join Session 
             </a>
