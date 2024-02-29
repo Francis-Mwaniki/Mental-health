@@ -5,9 +5,26 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
-import { CheckCircleIcon } from "lucide-react";
+import { CheckCircleIcon, Loader } from "lucide-react";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+
+interface Counselor  {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  message: string;
+  organization: string;
+  location: string;
+  startAvailability: string;
+  endAvailability: string;
+  phone: string;
+  selectedSpecializations: string[];
+};
 
 export default function Component() {
+  const router = useRouter();
 const [firstName, setFirstName] = useState("");
 const [lastName, setLastName] = useState("");
 const [email, setEmail] = useState("");
@@ -18,7 +35,9 @@ const [startAvailability, setStartAvailability] = useState("");
 const [endAvailability, setEndAvailability] = useState("");
 const [phone, setPhone] = useState("");
 const [selectedSpecializations, setSelectedSpecializations] = useState<string[]>([]);
-
+const [password, setPassword] = useState("");
+const [error, setError] = useState("");
+const [loading, setLoading] = useState(false);
 const specializationData = [
   "Counseling",
   "Therapy",
@@ -42,6 +61,58 @@ const handleSpecializationClick = (specialization: string) => {
     e.preventDefault();
     // Add logic here to handle the form data, such as sending it to a server
     console.log('Form submitted:', { firstName, lastName, email, message, organization, specializationData, location, startAvailability, endAvailability, phone });
+   // Add logic here to handle the form data, such as sending it to a server -api/auth/counselor/
+    const counselor = { firstName, lastName, email, message, organization, location, startAvailability, endAvailability, phone, selectedSpecializations, password };
+    console.log(counselor);
+
+    // Basic validation
+    if (!firstName || !lastName || !email || !message || !organization || !location || !startAvailability || !endAvailability || !phone || !selectedSpecializations || !password) {
+      // Handle validation errors
+      setError("Please fill all the fields");
+      toast.error("Please fill all the fields");
+      return;
+    }
+    setLoading(true);
+
+    fetch("/api/auth/counselor", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(counselor),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setLoading(false);
+        if (data.error) {
+          setError(data.error);
+          toast.error(data.error);
+        } else {
+          toast.success("Counselor created successfully");
+          setError("");
+          setFirstName("");
+          setLastName("");
+          setEmail("");
+          setMessage("");
+          setOrganization("");
+          setLocation("");
+          setStartAvailability("");
+          setEndAvailability("");
+          setPhone("");
+          setSelectedSpecializations([]);
+          setPassword("");
+        }
+
+        router.push("/auth/login");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setLoading(false);
+        setError("Something went wrong");
+        toast.error("Something went wrong");
+      });
+
   };
   return (
     <section className="w-full sm:w-1/2 mx-auto py-12 md:py-24 lg:py-32">
@@ -67,6 +138,10 @@ const handleSpecializationClick = (specialization: string) => {
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input id="email" placeholder="Enter your email" type="email" onChange={e => setEmail(e.target.value)} value={email} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" placeholder="Enter your password" type="password" onChange={e => setPassword(e.target.value)} value={password} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="message">Who are you?</Label>
@@ -177,8 +252,14 @@ const handleSpecializationClick = (specialization: string) => {
             </div>
           </div>
 
-        <Button className="w-full" type="submit">
-          Apply As Counselor
+        <Button
+          disabled={loading}
+        className="w-full" type="submit">
+         {
+            loading ? (<>
+          <Loader className="animate-spin h-6 w-6 mr-2" />
+            </>) : " Apply As Counselor"
+         }
         </Button>
 
         </form>

@@ -3,59 +3,58 @@ import { CardTitle, CardDescription, CardHeader, CardContent, CardFooter, Card }
 import { Button } from "@/components/ui/button"
 import { useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader } from "lucide-react";
 import crypto from "crypto";
+import React from "react";
+import { Badge } from "./ui/badge";
+import { useRouter } from "next/navigation";
 
 
 
 interface Counsellors {
     id: number;
-    counselor: string;
-    specialization: string;
+    firstName: string;
+    lastName: string;
+    message: string;
     image: string;
     organization: string;
   }
 export default function Component() {
+  const router = useRouter();
     const token = crypto.randomBytes(20).toString('hex');
-  const [counselors, setcounselors] = useState<Counsellors[]>  ([
-        {
-          id: 1,
-          counselor: "John Doe",
-          specialization: "Specializes in residential construction and renovation.",
-          image: "https://images.pexels.com/photos/5302897/pexels-photo-5302897.jpeg?auto=compress&cs=tinysrgb&w=600",
-          organization: "Organization 1",
-        },
-        {
-          id: 2,
-          counselor: "Jane Smith",
-          specialization: "Expert in commercial construction and large-scale projects.",
-          image: "https://images.pexels.com/photos/6544376/pexels-photo-6544376.jpeg?auto=compress&cs=tinysrgb&w=600",
-          organization: "Organization 2",
-        },
-        {
-          id: 3,
-          counselor: "Robert Johnson",
-          specialization: "Specializes in interior design and remodeling.",
-          image: "https://images.pexels.com/photos/897817/pexels-photo-897817.jpeg?auto=compress&cs=tinysrgb&w=600",
-          organization: "Organization 3",
-        },
-        {
-          id: 4,
-          counselor: "Emily Davis",
-          specialization: "Expert in landscape architecture and outdoor projects.",
-          image: "https://images.pexels.com/photos/6740823/pexels-photo-6740823.jpeg?auto=compress&cs=tinysrgb&w=600",
-          organization: "Organization 4",
-        },
-    ]);;
+    const [loading, setLoading] = useState(false)
+  const [counselors, setcounselors] = useState<Counsellors[]>  ([ ]);
   
-//     useEffect(() => {
-//       const fetchcounselors = async () => {
-//         const response = await fetch("https://api.example.com/counselors");
-//         const data = await response.json();
-//         setcounselors(data);
-//       };
-//       fetchcounselors();
-// }, []);
+
+  // Fetch all counselors - GET /api/counselor/getall
+  const fetchCounselors = async () => {
+    setLoading(true);
+    try {
+      let res = await fetch("/api/counselor/getall");
+      let data = await res.json();
+      if(data.status === 401 || data.status === 400 || data.status === 500){
+        console.error(data.message);
+        return;
+      }
+      setcounselors(data.data);
+      console.log("counselors", data.data);
+      
+      setLoading(false);
+    } catch (error:any) {
+      console.error(error);
+      setLoading(false);
+    }
+  }
+
+  // Fetch all counselors
+  React.useEffect(() => {
+    fetchCounselors();
+  }, [
+    router
+  ]);
+
+
+
   return (
     <div className=" dark:bg-neutral-950 dark:text-white">
      <h1 className="text-4xl text-center  font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
@@ -64,6 +63,15 @@ export default function Component() {
         <p className="text-center">
             Meet our team of professional counselors
         </p>
+        {
+          loading  &&
+           <div className="flex justify-center items-center h-96 flex-col">
+            <Loader className="animate-spin" size={50} />
+            <span className="ml-3">Loading...</span>
+          </div>
+        }
+        {
+          !loading && (<>
           <div className="grid hover:backdrop:blur-lg gap-6 md:grid-cols-2 space-x-2 space-y-2 m-2 xl:grid-cols-4">
        
 
@@ -94,14 +102,16 @@ export default function Component() {
                             transition-all duration-500 ease-in-out
                        "
                        style={{objectFit: "cover"}}
-                       src={`https://ui-avatars.com/api/?background=random&name=${counselor.counselor}`}
-                       alt={counselor.counselor} />
-                        <CardTitle>{counselor.counselor}</CardTitle>
-                        <CardDescription>{counselor.specialization}</CardDescription>
-                        <CardDescription>{counselor.organization}</CardDescription>
+                       src={`https://ui-avatars.com/api/?background=random&name=${counselor.firstName}+${counselor.lastName}`}
+                       alt={counselor.firstName} />
+                        <CardTitle>{counselor.
+                        firstName} {counselor.lastName
+                        }</CardTitle>
+                        <CardDescription>{counselor.message}</CardDescription>
+                        <span className=" bg-green-50 hover:bg-green-50 block p-3 rounded-md">Organization     <span className=" bg-green-600 px-2 py-1 rounded-lg">{counselor.organization}</span></span>
                     </CardHeader>
                     <CardContent>
-                      <a href={`/counselor/${counselor.id}?token=${token}`}>
+                      <a href={`/counselor/${counselor.id}?token=${token}?counselor=true`}>
                         <Button className="w-full group
                         flex items-center justify-center
                         " type="submit">
@@ -117,6 +127,9 @@ export default function Component() {
      
 
     </div>
+          </>)
+        }
+          
     </div>
   
   )

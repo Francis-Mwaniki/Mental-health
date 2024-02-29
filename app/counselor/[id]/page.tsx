@@ -3,14 +3,15 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import React, { use, useEffect, useState } from "react"
-import { Loader2 } from "lucide-react";
+import { CheckCircle, Loader2, Verified, VerifiedIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@radix-ui/react-label";
 import toast from "react-hot-toast";
+import RequestCard from "@/components/RequestCard";
 interface Request {
-  id: number;
+  id: string;
   name: string;
   email: string;
   message: string;
@@ -19,7 +20,7 @@ interface Request {
   counselorName: string;
   shareMeetingLink: string;
   isAccepted: boolean;
-  conselorId: number;
+  conselorId: string;
 }
 type Props = {
     params: {
@@ -27,20 +28,21 @@ type Props = {
     }
 }
 
-interface Counselor{
+interface Counselor {
     id: string;
-    name: string;
-    bio: string;
-    specialization: string[];
+   firstName: string;
+    lastName: string;
+    email: string;
+    message: string;
     organization: string;
-    availability: string[];
     location: string;
-    contact: {
-        email: string;
-        phone: string;
-    };
-};
-
+    startAvailability: string;
+    endAvailability: string;
+    phone: string;
+    selectedSpecializations: string[];
+    password: string;
+    profilePicture: string;
+  }
 export default function Component({params}: Props) {
   const router = useRouter();
     const { id } = params;
@@ -53,30 +55,90 @@ export default function Component({params}: Props) {
  const [isBookingSuccess, setIsBookingSuccess] = useState('');
  const [isBookingError, setIsBookingError] = useState('');
  const [isBookingInfo, setIsBookingInfo] = useState(false);
+ const [isFetching, setIsFetching] = useState(false);
+ const [isCounselor, setIsCounselor] = useState(false);
  const [bookingEmail, setBookingEmail] = useState('');
  const [bookingName, setBookingName] = useState('');
  const [requests, setRequests] = useState<Request[]>([]);
  const [isFetchingRequests, setIsFetchingRequests] = useState(false);
  const availableHours = Array.from({ length: 10 }, (_, index) => index + 8)
   const [user, setUser] = useState<Counselor>({
-    id: '',
-    name: '',
-    bio: '',
-    specialization: [],
+    id: "",
+    firstName: '',
+    lastName: '',
+    email: '',
+    message: '',
     organization: '',
-    availability: [],
     location: '',
-    contact: {
-        email: '',
-        phone: '',
-    }
+    startAvailability: '',
+    endAvailability: '',
+    phone: '',
+    selectedSpecializations: [],
+    password: '',
+    profilePicture: ''
 });
+
+useEffect(() => {
+  if (localStorage.getItem('conselor')) {
+    setIsCounselor(true);
+  }
+  fetchRequests();
+}
+, [
+  router
+]);
+
+  //fetching user
+  const fetchUser = async () => {
+    setIsFetching(true)
+    const res = await fetch(`/api/counselor/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id })
+    });
+
+    const data = await res.json();
+    console.log(data);
+
+    if (data.status === 200) {
+      const user: Counselor = data;
+        console.log("user",user);
+        
+      setUser(data.user);
+      console.log(user);
+      setIsFetching(false);
+    }
+
+    if (
+      data.status === 400 ||
+      data.status === 500 ||
+      data.status === 404 ||
+      data.status === 401 ||
+      data.status === 405
+    ) {
+      setIsFetching(false);
+      console.log(data.message);
+      toast.error(data.message,{
+        style: {
+          border: '1px solid #713200',
+          padding: '16px',
+          color: '#713200',
+        },
+        iconTheme: {
+          primary: '#713200',
+          secondary: '#FFFAEE',
+        },
+      });
+    }
+  }
 
 
    //fetching all requests booked by user
    const fetchRequests = async () => {
     setIsFetchingRequests(true)
-    const res = await fetch(`/api/admin/counselors/requests`, {
+    const res = await fetch(`/api/auth/counselor/requests`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -118,9 +180,86 @@ export default function Component({params}: Props) {
   };
   const getMeetingLink = () => {
     const randomString = Math.random().toString(36).substring(7);
-    return `https://construction-ruby.vercel.app/meeting/${randomString}`;
+    return `https://kabu-mental-health.vercel.app/meeting/${randomString}`;
   }
+  useEffect(() => {
+    if(selectedHour !== null){
+      setIsCheckingHour(true);
+  
+     // api call to check if the hour is available -api/auth/counselor/bookings/precheck
+      const url = `/api/auth/counselor/booking/precheck`;
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id:id, hour:selectedHour })
+      }
+      fetch(url,options).then(res => res.json()).then(data => {
+        if(data.status === 200){
+          setIsCheckingHour(false);
+          setIsBookingSuccess(data.message);
+         toast.success(`${data.message}`, {
+          style: {
+            border: '1px solid #713200',
+            padding: '16px',
+            color: '#713200',
+          },
+          duration: 4000,
+          iconTheme: {
+            primary: '#713200',
+            secondary: '#FFFAEE',
+          },
 
+        });
+        setTimeout(() => {
+          setIsBookingSuccess('');
+        }
+        , 4000);
+        }
+        if(data.status === 400 || data.status === 500){
+          setIsCheckingHour(false);
+          setIsBookingError(data.message);
+          toast.error(`${data.message}`, {
+            style: {
+              border: '1px solid #713200',
+              padding: '16px',
+              color: '#713200',
+            },
+            duration: 4000,
+            iconTheme: {
+              primary: '#713200',
+              secondary: '#FFFAEE',
+            },
+            
+          });
+
+          setTimeout(() => {
+            setIsBookingError('');
+          }
+          , 4000);
+        }
+      }
+      ).catch(error => {
+        setIsCheckingHour(false);
+        setIsBookingError('Something went wrong');
+        toast.error('Something went wrong',{
+          style: {
+            border: '1px solid #713200',
+            padding: '16px',
+            color: '#713200',
+          },
+          iconTheme: {
+            primary: '#713200',
+            secondary: '#FFFAEE',
+          },
+        });
+      });
+    }
+  }
+  , [
+    selectedHour
+  ]);
 
   const handleBooking = async (e: any) => {
     e.preventDefault();
@@ -153,8 +292,8 @@ export default function Component({params}: Props) {
         message: bookingMessage,
         hour: selectedHour,
         counselorId: id,
-        counselorEmail: user.contact.email,
-        counselorName: user.name,
+        counselorEmail: user.email,
+        counselorName: user.firstName,
         shareMeetingLink: getMeetingLink()
        })
     });
@@ -221,6 +360,8 @@ export default function Component({params}: Props) {
 useEffect(() => {
   setIsLoading(true)
   setTimeout(() => {
+    fetchUser();
+    // fetchRequests();
     setIsLoading(false)
   }, 3000);
 }
@@ -229,7 +370,17 @@ useEffect(() => {
 
 
   return (
-    <section className="dark:bg-neutral-950 dark:text-white py-7 sm:py-12 items-center m-auto flex justify-center">
+    <>
+    {
+      isFetching && (
+        <div className="min-h-screen flex items-center justify-center">
+          <Loader2 className="w-12 h-12 text-blue-800 animate-spin" />
+        </div>
+      )
+    }
+    {
+      !isFetching && (
+         <section className="dark:bg-neutral-950 dark:text-white py-7 sm:py-12 items-center m-auto flex justify-center">
    {
         isLoading && (
           <div className="min-h-screen flex items-center justify-center">
@@ -239,7 +390,7 @@ useEffect(() => {
    }
    {
     !isLoading && (<div className={` ${isLoading ? 'hidden rotate-45' : 'block transform rotate-0'}`}>
-    <Card className="w-full sm:max-w-5xl p-4 md:p-8
+    <div className="w-full sm:max-w-5xl p-4 md:p-8
     transition-all duration-500 ease-in-out transform 
     
     "
@@ -253,7 +404,7 @@ useEffect(() => {
                 alt="Image"
                 className="bg-gray-200 dark:bg-gray-800"
                 height="64"
-                src={`https://ui-avatars.com/api/?background=random&name=Dr.JaneDoe`}
+                src={`https://ui-avatars.com/api/?background=random&name=${user.firstName}+${user.lastName}`}
                 style={{
                   aspectRatio: "64/64",
                   objectFit: "cover",
@@ -262,7 +413,17 @@ useEffect(() => {
               />
             </div>
             <div className="space-y-1">
-              <h1 className="text-2xl font-bold">Dr. Jane Doe</h1>
+             
+              <h1 className="text-2xl font-bold ">
+               <span className=" "> {user.firstName} {user.lastName} </span>
+              </h1>
+               <div className="flex  items-start  flex-row mx-auto justify-start">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  Counselor
+                </span>
+                <VerifiedIcon size={20} className=" text-green-500" />
+                
+              </div>
               <Button size="sm" variant="outline">
                 id-{id}
               </Button>
@@ -271,54 +432,86 @@ useEffect(() => {
           <div className="space-y-2">
             <h2 className="text-lg font-semibold">Bio</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Dr. Jane Doe is a licensed counselor with over 10 years of experience helping individuals and families
-              overcome challenges. She provides a safe and supportive environment for her clients to explore their
-              feelings and develop coping strategies. Dr. Doe uses a person-centered approach and integrates cognitive
-              behavioral therapy (CBT) and mindfulness techniques into her sessions.
+              {user.message}
             </p>
           </div>
-          <Card className="space-y-2 p-2 ">
+          <Card className="space-y-2 p-2  bg-green-50">
             <h2 className="text-lg font-semibold">Specialization</h2>
-            <ul className="grid gap-2 list-disc list-inside">
-              <li>Anxiety and stress management</li>
-              <li>Relationship issues</li>
-              <li>Self-esteem and confidence building</li>
-              <li>Grief and loss</li>
-              <li>Life transitions</li>
+            <ul className="grid gap-2">
+              {user.selectedSpecializations.map((specialization) => (
+                <li  className="text-sm text-gray-500 dark:text-gray-400 flex justify-start items-start bg-green-300 p-2 rounded-md"
+                key={specialization}>
+                  <CheckCircle className="w-5 h-5 mr-2" />
+                  <span>{specialization}</span>
+                  </li>
+              ))}
             </ul>
           </Card>
         </div>
         <div className="space-y-4 lg:pl-4">
           <div className="space-y-2">
             <h2 className="text-lg font-semibold">Organization</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Acme Counseling Center</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {user.organization}
+            </p>
           </div>
-          <Card  className="space-y-2 p-2 ">
+          <Card  className="space-y-2 p-2  bg-green-50">
+            <Card className="  p-2 bg-green-300">
             <h2 className="text-lg font-semibold">Availability</h2>
             <div className="grid gap-2 text-sm">
-              <div>Monday: 9:00 AM - 5:00 PM</div>
-              <div>Tuesday: 9:00 AM - 5:00 PM</div>
-              <div>Wednesday: 9:00 AM - 5:00 PM</div>
-              <div>Thursday: 9:00 AM - 5:00 PM</div>
-              <div>Friday: 9:00 AM - 5:00 PM</div>
+              <div>
+                <span>Start: </span>
+                <span className="font-semibold"> {user.startAvailability}:00  {Number(user.startAvailability) > 12 ? 'pm' : 'am'}</span>
+              </div>
+              <div>
+                <span>End: </span>
+                <span className="font-semibold"> {user.endAvailability}:00 {Number(user.endAvailability) > 12 ? 'pm' : 'am'}</span>
+              </div>
+             
             </div>
+            </Card>
           </Card>
           <div className="space-y-2">
             <h2 className="text-lg font-semibold">Location</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">123 Main Street, Anytown, USA</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {user.location}
+            </p>
           </div>
           <div className="space-y-2">
             <h2 className="text-lg font-semibold">Contact</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Email: info@example.com</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Phone: +1 123-456-7890</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Email: 
+            <a href={`mailto:${user.email}`} className="text-blue-500">
+              {user.email}
+            </a>
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Phone: 
+            <a href={`tel:${user.phone}`} className="text-blue-500">
+              {user.phone}
+            </a>
+            </p>
           </div>
         </div>
       </div>
    
+      {
+              isCounselor && (<>
+              <CardDescription className=" font-extrabold text-2xl justify-center items-center mx-auto flex m-5">
+                All Booking Requests
+              </CardDescription>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 ">
+
+                {requests.map((request) => (
+                  <RequestCard key={request.id} request={request}
+                  conselorId={user.id}
+                   />
+                ))}
+              </div>
+              </>)
+             }
 
        {/* book meeting */}
     <Card className=" my-2">
-                <Card className="p-2 border border-blue-400">
+                <Card className="p-2 border border-green-400">
                   <CardHeader>
                 <CardTitle>Book Meeting</CardTitle>
                 <CardDescription>Book a meeting with your counselor.</CardDescription>
@@ -334,7 +527,7 @@ useEffect(() => {
                       <button
                         key={hour}
                         className={`${
-                          selectedHour === hour ? 'bg-black text-white' : 'bg-gray-200'
+                          selectedHour === hour ? 'bg-black text-white' : 'bg-green-300 shadow shadow-black'
                         } px-4 py-2 my-2 rounded focus:outline-none`}
                         onClick={() => handleHourClick(hour)}
                         disabled={selectedHour !== null && selectedHour !== hour}
@@ -360,7 +553,7 @@ useEffect(() => {
                  }
                  {
                   selectedHour === null && !isCheckingHour && (
-                    <p className="text-red-500">Select an hour to book a meeting</p>
+                    <p className="text-green-500">Select an hour to book a meeting</p>
 
                   )
                  }
@@ -435,13 +628,18 @@ useEffect(() => {
                 </Card>
               
               </Card>
-    </Card>
+    </div>
 
    
     </div>)
    }
     
   </section>
+      )
+    }
+    
+    </>
+   
   )
 }
 
