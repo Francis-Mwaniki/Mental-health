@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// prisma/schema.prisma
+  // id                     ObjectId @id @default(auto()) @map("_id") @db.ObjectId
+//  firstName: String
+//   lastName: String
+//   email: String
+//   message: String
+//   organization: String
+//   location: String
+//   startAvailability: String
+//   endAvailability: String
+//   phone: String
+//   selectedSpecializations: String[]
+model Counselor {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  firstName String
+  lastName  String
+  email     String
+  message   String
+  organization String
+  location  String
+  isApproved         Boolean  @default(false)
+  startAvailability String
+  endAvailability String
+  phone     String
+  selectedSpecializations String[]
+  password  String
+  profilePicture String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  resources FileResources[]
+  meetings           Meeting[]
+}
+model Meeting {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String
+  message   String
+  hour      Int
+  counselorEmail String
+  counselorName String
+  shareMeetingLink String @default("")
+  counselor    Counselor @relation(fields: [counselorId], references: [id])
+  counselorId String @db.ObjectId
+  isAccepted Boolean @default(false)
+}
+model FileResources {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  description String
+  url      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  counselor Counselor @relation(fields: [counselorId], references: [id])
+  counselorId String @db.ObjectId
+
+}
+
+

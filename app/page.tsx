@@ -3,7 +3,7 @@ import Link from "next/link"
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar"
 import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card"
 import { JSX, SVGProps, useEffect, useRef, useState } from "react"
-import { ArrowDownLeftSquare, ArrowRight, ArrowUp, ExternalLink, HeartPulse, LucideFrame } from "lucide-react"
+import { ArrowDownLeftSquare, ArrowUp, ExternalLink, HeartPulse, LucideFrame } from "lucide-react"
 import  Resources  from "@/components/addsResources"
 import Image from "next/image"
 import  Counsellors  from "@/components/Counsellors"
@@ -87,25 +87,32 @@ export default function Component() {
             Mental Health
           </span>
         </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
-          <a onClick={handleClickSection.bind(null,'home')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
-            Home
+        <nav className="ml-auto flex gap-4 sm:gap-6 ">
+          <a onClick={handleClickSection.bind(null,'home')} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-1 hover:underline transition-all duration-500 
+           
+          " href="#">
+            <span>Home</span>
+            <ArrowDownLeftSquare className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
           </a>
-          <a onClick={handleClickSection.bind(null,'resources')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
-            Resources
+          <a onClick={handleClickSection.bind(null,'resources')} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-1 hover:underline transition-all duration-500 " href="#">
+            <span>Resources</span>
+            <ArrowDownLeftSquare className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
           </a>
-          <a onClick={handleClickSection.bind(null,'contact')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
-            Contact
+          <a onClick={handleClickSection.bind(null,'contact')} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-1 hover:underline transition-all duration-500 " href="#">
+            <span>Contact</span>
+            <ArrowDownLeftSquare className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
           </a>
-          <a onClick={handleClickSection.bind(null,'counselor')} className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " href="#">
-            Counselors
+          <a onClick={handleClickSection.bind(null,'counselor')} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-1 hover:underline transition-all duration-500 " href="#">
+            <span>Counselors</span>
+            <ArrowDownLeftSquare className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
           </a>
           {/* getStarted */}
           <a 
           onClick={handleClickSection.bind(null,'getStarted')}
-          className="text-sm cursor-pointer sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-2 hover:underline transition-all duration-500 " >
+          className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-1 hover:underline transition-all duration-500 " >
            
-              Get Started
+            <span>Get Started</span>
+            <ArrowDownLeftSquare className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
             
           </a>
         </nav>
@@ -270,7 +277,7 @@ export default function Component() {
             {/* login as a conselor  */}
             <a href="/auth/login" className="text-sm group text-blue-600  hover:text-blue-700 flex flex-row gap-x-2 rotate-0 hover:rotate-3  scale-90 hover:scale-105 justify-center items-center italic  border-b-2 border-solid hover:border-dashed border-blue-600  hover:border-blue-800 no-underline  font-medium  border-s-orange-700 underline-offset-4">
               <span>Login as a Counselor </span>
-              <ArrowRight  className="w-6 h-6
+              <ArrowDownLeftSquare  className="w-6 h-6
               group-hover:animate-bounce
               " />
               </a>
