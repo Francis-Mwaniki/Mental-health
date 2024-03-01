@@ -16,7 +16,7 @@ interface Counsellors {
     firstName: string;
     lastName: string;
     message: string;
-    image: string;
+    profilePicture: string;
     organization: string;
   }
 export default function Component() {
@@ -111,7 +111,7 @@ export default function Component() {
                             transition-all duration-500 ease-in-out
                        "
                        style={{objectFit: "cover"}}
-                       src={`https://ui-avatars.com/api/?background=random&name=${counselor.firstName}+${counselor.lastName}`}
+                       src={counselor.profilePicture || `https://ui-avatars.com/api/?background=random&name=${counselor.firstName}+${counselor.lastName}`}
                        alt={counselor.firstName} />
                         <CardTitle>{counselor.
                         firstName} {counselor.lastName
