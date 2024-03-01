@@ -99,8 +99,8 @@ export default function Component() {
           </Button>
         </form>
         <div className="flex justify-center space-x-2 py-2">
-            <a href="/auth/reset-password" className="text-blue-600 hover:underline">Forgot Password?</a>
-            <a href="/auth/register" className="text-blue-600 hover:underline">Register</a>
+            {/* <a href="/auth/reset-password" className="text-blue-600 hover:underline">Forgot Password?</a> */}
+            <a href="/auth/register" className="text-blue-600 hover:underline">Apply as Counselor</a>
         </div>
 
 

@@ -1,7 +1,7 @@
 
 import { CardTitle, CardDescription, CardHeader, CardContent, CardFooter, Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { ArrowRight, Loader } from "lucide-react";
 import crypto from "crypto";
@@ -23,8 +23,17 @@ export default function Component() {
   const router = useRouter();
     const token = crypto.randomBytes(20).toString('hex');
     const [loading, setLoading] = useState(false)
+    const [isCounselor, setIsCounselor] = useState(false);
   const [counselors, setcounselors] = useState<Counsellors[]>  ([ ]);
-  
+  const [previewImg, setPreviewImg] = useState<string | ArrayBuffer | null>(null);
+  useEffect(() => {
+    if (localStorage.getItem('conselor')) {
+      setIsCounselor(true);
+    }
+  }
+  , [
+    router
+  ]);
 
   // Fetch all counselors - GET /api/counselor/getall
   const fetchCounselors = async () => {
@@ -115,7 +124,11 @@ export default function Component() {
                         <Button className="w-full group
                         flex items-center justify-center
                         " type="submit">
-                        <span>Book Appointment</span>
+                        <span>
+                          {
+                            isCounselor ? "View Profile" : "Book Appointment"
+                          }
+                        </span>
                         <ArrowRight className="h-6 w-6 ml-2 group-hover:animate-bounce" />
                         </Button>
                         </a>
