@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { JSX, SVGProps } from "react";
-import {  ArrowUp, Copy, CopyIcon, Loader2, LogOut, MessageSquareDashedIcon, Pencil, Share, Trash } from "lucide-react"
+import {  ArrowLeft, ArrowUp, Copy, CopyIcon, Loader2, LogOut, MenuIcon, MessageSquareDashedIcon, Pencil, Share, Trash } from "lucide-react"
 import toast from "react-hot-toast";
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip";
+import { useRouter } from "next/navigation";
 interface IMsgDataTypes {
   roomId: string | number;
   user: string;
@@ -18,9 +20,10 @@ interface RoomProps {
   roomId: string;
 }
 const ChatPage = ({ socket, username, roomId , onMessageSent}: RoomProps) => {
-  
+  const router = useRouter();
   const [currentMsg, setCurrentMsg] = useState("");
   const [chat, setChat] = useState<IMsgDataTypes[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
   const [sending, setSending] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const messagesRef = useRef<HTMLDivElement | null>(null);
@@ -73,6 +76,9 @@ const ChatPage = ({ socket, username, roomId , onMessageSent}: RoomProps) => {
     }
   }, [chat,
     currentMsg,
+    isOpen,
+    roomId,
+    router,
     messagesRef.current?.scrollHeight]);
 
   useEffect(() => {
@@ -108,12 +114,8 @@ const ChatPage = ({ socket, username, roomId , onMessageSent}: RoomProps) => {
   isConnected && (
     <div className="w-full h-full flex flex-col lg:flex-row relative">
       {/* Aside Section */}
-      <aside className="w-full lg:w-[28%] h-full border-r lg:border-r-0 lg:border-b overflow-auto sm:sticky sm:z-20 sm:bg-white  sm:left-0 ">
-        <div className="p-4">
-          <h2 className="text-xl font-bold">Contacts</h2>
-        </div>
-        
-        <ul className="divide-y">
+      <aside className="w-full lg:w-[28%] h-full border-r lg:border-r-0 lg:border-b overflow-auto sm:sticky sm:z-20 sm:bg-white  sm:left-0  mt-8">
+      <ul className="divide-y sm:flex flex-col hidden">
           {/* message send list */}
            {
               username
@@ -147,12 +149,52 @@ const ChatPage = ({ socket, username, roomId , onMessageSent}: RoomProps) => {
 
            
         </ul>
+        
+      {
+        isOpen && (<>
+          <ul className="divide-y flex sm:hidden flex-col">
+          {/* message send list */}
+           {
+              username
+               && (<li className="flex items-center p-4">
+              <img
+                src={`https://ui-avatars.com/api/?background=random&name=${username}`}
+                alt={username}
+                className="w-10 h-10 mr-4 rounded-full"
+              />
+              <div>
+                <h3 className="font-bold">{username}</h3>
+                <p className="text-sm text-gray-400 font-bold">
+                  {username} joined
+                </p>
+              </div>
+            </li> )}
+            
+               <li className="flex items-center p-4 hover:transition-all hover:bg-gray-200 cursor-pointer rounded">
+              <a onClick={logout} className="cursor-pointer flex items-center justify-center gap-x-3 mx-3 ">
+                <LogOut className="h-6 w-6 mr-4" />
+                <span className="font-bold">Logout</span>
+              </a>
+            </li>
+            {/* clear all chats */}
+            <li className="flex items-center p-4 hover:transition-all hover:bg-gray-200 cursor-pointer rounded">
+              <a onClick={() => setChat([])} className="cursor-pointer flex items-center justify-center gap-x-3 mx-3 ">
+                <Trash className="h-6 w-6 mr-4" />
+                <span className="font-bold">Clear all chats</span>
+              </a>
+            </li>
+
+           
+        </ul>
+        </>)
+      }
       </aside>
 
       {/* Section Section */}
-      <section className="w-full sm:left-[28%] lg:w-2/3 h-full flex flex-col divide-x-2 divide-gray-200 min-h-screen sm:absolute ">
-        {/* Header */}
-        <header className="flex items-center justify-between p-4 border-b">
+      <section 
+       className="w-full sm:left-[28%] lg:w-2/3 sm:h-full flex flex-col divide-x-2 sm:min-h-screen h-auto divide-gray-200  sm:absolute ">
+        {/* Header desktop */}
+        <header className="flex  items-center justify-between p-4 border-b">
           <h2 className="text-xl font-bold">
             {roomId ? (<div className="flex items-center">
               <span className="mx-2">Room: {roomId}</span>
@@ -183,11 +225,20 @@ const ChatPage = ({ socket, username, roomId , onMessageSent}: RoomProps) => {
             <span className="sr-only">Close chat</span>
           </Button>
         </header>
+        {/* Header mobile */}
+        <Button
+        onClick={() => setIsOpen(!isOpen)}
+         size="icon" variant="outline" className="sm:hidden m-2">
+          <MenuIcon className="h-6 w-6" />
+          <span className="sr-only">Open chat</span>
+        </Button>
+      
+        
 
         {/* Chat Messages */}
         <div 
         ref={(ref) => (messagesRef.current = ref as HTMLDivElement)}
-        className="flex-1 overflow-auto p-4 space-y-4 sm:my-3 my-10 ">
+        className="flex-1 sm:overflow-auto overflow-hidden p-4 space-y-4 sm:my-3 my-10  h-40 sm:h-auto">
          <>
          {
               chat.length === 0 && (
@@ -283,14 +334,15 @@ sending ? (
         </div>
 
         {/* Message Input */}
-        <div className="p-4 border-t  sm:sticky bg-white fixed bottom-1 inset-x-0 z-20">
+        <div 
+        className="p-4 border-t  sm:sticky bg-white fixed bottom-0 inset-x-0 z-20">
          
           {/* sending  message*/}
           <div className="flex justify-center items-center">
           {
             sending && (
              
-              <p className="text-xs text-gray-800 text-center py-2  rounded w-full min-w-[400px] mb-2">
+              <p className="text-xs text-gray-800 text-center py-2  rounded w-full min-w-[400px] mb-2  justify-center items-center flex mx-auto ">
                  <Loader2 className="h-6 w-6 animate-spin" />
                   
                   
@@ -319,13 +371,35 @@ sending ? (
           </form>
         </div>
       </section>
+      {/* go home */}
+  <button
+      onClick={() => {
+        window.location.href = "/";
+      }}
+      className="sm:fixed hidden left-4  sm:bottom-2  z-50  text-gray-50 "
+    >
+        
+        <TooltipProvider>
+  <Tooltip >
+    <TooltipTrigger className=' rounded-full flex-col justify-center items-center m-auto bg-transparent shadow-md sm:text-white text-black sm:bg-gray-900 p-2'>
+      <ArrowLeft className="w-5 h-5" />
+    </TooltipTrigger>
+    <TooltipContent>
+      <p>
+        Go Home
+      </p>
+    </TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+
+    </button>
     </div>
   )
     }
     
   
 
- 
+  
 </>
   
   );
