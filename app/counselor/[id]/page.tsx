@@ -26,7 +26,6 @@ interface Request {
   counselorName: string;
   shareMeetingLink: string;
   isAccepted: boolean;
-  conselorId: string;
 }
 type Props = {
     params: {

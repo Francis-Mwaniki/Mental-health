@@ -6,20 +6,20 @@ const prisma = new PrismaClient();
 export async function POST(req: Request, res: Response) {
 
   try {
-    if (!req.body) {
-      return new NextResponse("Invalid request", { status: 400 });
-    }
-    const  { id,counselorId } = await req.json(); 
+    // if (!req.body) {
+    //   return new NextResponse("Invalid request", { status: 400 });
+    // }
+    const  { id,conselorId } = await req.json(); 
 
-    console.log("id",id,counselorId);
-    if(!id || !counselorId){
+    console.log("id",id,conselorId);
+    if(!id || !conselorId){
         return NextResponse.json({ message: "Invalid request", status: 400 });
         }
     
 
     const data = await prisma.counselor.findUnique({
         where:{
-            id: (counselorId)
+            id: (conselorId)
         },
         select:{
          meetings:true
@@ -47,7 +47,7 @@ export async function POST(req: Request, res: Response) {
     //fetch the updated meetings
     const updatedMeetings = await prisma.counselor.findUnique({
         where:{
-            id: (counselorId)
+            id: (conselorId)
         },
         select:{
          meetings:true
