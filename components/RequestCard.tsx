@@ -15,14 +15,13 @@ interface Request {
     counselorName: string;
     shareMeetingLink: string;
     isAccepted: boolean;
-    conselorId: string;
   }
   interface RequestCardProps {
     request: Request;
     conselorId: string;
   }
   
-  const RequestCard: React.FC<RequestCardProps> = ({ request }) => {
+  const RequestCard: React.FC<RequestCardProps> = ({ request ,conselorId}) => {
     const {
       id,
       name,
@@ -32,7 +31,6 @@ interface Request {
       counselorEmail,
       counselorName,
       shareMeetingLink,
-      conselorId,
       isAccepted,
     } = request;
 
@@ -112,17 +110,19 @@ interface Request {
     const handleDelete = async () => {
       setIsDeleting(true);
       try {
-        if((!id) || (!conselorId)) {
-          return toast.error("Something went wrong",{style: {
-            border: '1px solid #713200',
-            padding: '16px',
-            color: '#713200',
-          },
-          iconTheme: {
-            primary: '#713200',
-            secondary: '#FFFAEE',
-          },});
-        }
+        // if((!id) || (!conselorId)) {
+        //   return toast.error("Something went wrong",{style: {
+        //     border: '1px solid #713200',
+        //     padding: '16px',
+        //     color: '#713200',
+        //   },
+        //   iconTheme: {
+        //     primary: '#713200',
+        //     secondary: '#FFFAEE',
+        //   },});
+        // }
+        console.log("id", id, "conselorId", conselorId);
+        
         const response = await fetch("/api/auth/counselor/requests/delete", {
           method: "POST",
           headers: {
@@ -135,7 +135,7 @@ interface Request {
         const data = await response.json();
         if (response.ok) {
           /* restart for  */
-          window.location.reload();
+          
           
           setIsDeleting(false);
           toast.success(data.message,{
@@ -149,6 +149,7 @@ interface Request {
               secondary: '#FFFAEE',
             },
           });
+          window.location.reload();
         }
         if (response.status === 400 || response.status === 500 || response.status === 404) {
           setIsDeleting(false);
