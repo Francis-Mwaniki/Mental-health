@@ -7,6 +7,7 @@ import { ArrowDownLeftSquare, ArrowUp, ExternalLink, HeartPulse, LucideFrame } f
 import  Resources  from "@/components/addsResources"
 import Image from "next/image"
 import  Counsellors  from "@/components/Counsellors"
+import Testimonial from "@/components/Testimonial"
 export default function Component() {
   const [selectedText, setSelectedText] = useState<string | null>(null);
   const [selectedTextPosition, setSelectedTextPosition] = useState<{ x: number; y: number } | null>(null);
@@ -71,6 +72,10 @@ export default function Component() {
           scrollToSection('counselor')
           nav?.classList.toggle('hidden');
         }
+        if(section === 'testimonials'){
+          scrollToSection('testimonials')
+          nav?.classList.toggle('hidden');
+        }
         if(section === 'getStarted'){
           scrollToSection('getStarted')
           nav?.classList.toggle('hidden');
@@ -112,6 +117,12 @@ export default function Component() {
             <span>Counselors</span>
             <ArrowDownLeftSquare className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
           </a>
+          {/* testimonial */}
+          <a onClick={handleClickSection.bind(null,'testimonials')} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-1 hover:underline transition-all duration-500 " href="#">
+            <span>Testimonials</span>
+            <ArrowDownLeftSquare className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
+          </a>
+           
           {/* getStarted */}
           <a 
           onClick={handleClickSection.bind(null,'getStarted')}
@@ -180,6 +191,9 @@ export default function Component() {
         </a>
         <a onClick={handleClickSection.bind(null,'counselor')} className="text-lg font-medium hover:underline" href="#">
           Counselors
+        </a>
+        <a onClick={handleClickSection.bind(null,'testimonials')} className="text-lg font-medium hover:underline" href="#">
+          Testimonials
         </a>
         <a 
         onClick={handleClickSection.bind(null,'getStarted')}
@@ -301,6 +315,19 @@ export default function Component() {
         className="w-full  py-16 md:py-16 lg:py-24 dark:bg-neutral-900 dark:text-[#f5f5f5]">
           <Resources />
           </section>
+          {/* testimonial */}
+          <section
+        id="testimonials"
+          className="w-full py-16 md:py-16 lg:py-24 dark:bg-neutral-900 dark:text-[#f5f5f5]">
+
+            <div className="container flex flex-col justify-center space-y-4 px-4 md:px-6">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-5xl/none">
+                T E S T I M O N I A L S
+              </h2>
+              <Testimonial />
+            </div>
+            </section>
+           
         <section
         id="contact"
          className="w-full py-16 md:py-16 lg:py-24 dark:bg-neutral-900 dark:text-[#f5f5f5]">

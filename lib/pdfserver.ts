@@ -19,10 +19,6 @@ export async function downloadFromCloudinary(file_key: string) {
       writer.on("error", reject);
     });
 
-    
-
-
- 
     }
     
 

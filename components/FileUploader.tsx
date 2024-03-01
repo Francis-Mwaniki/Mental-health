@@ -5,8 +5,21 @@ import {useDropzone} from "react-dropzone"
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { useRouter } from "next/navigation";
+import { Card } from './ui/card';
 type Props = {}
-
+interface CloudinaryAsset {
+    asset_id: string;
+    bytes: number;
+    format: string;
+    height: number;
+    original_filename: string;
+    pages: number;
+    placeholder: boolean;
+    public_id: string;
+    resource_type: string;
+    secure_url: string;
+  };
+  
 
 const FileUpload = () => {
     const router = useRouter();
@@ -16,18 +29,6 @@ const FileUpload = () => {
     const [file_key, setFileKey] = React.useState<string>("")
      const [uploadedFile, setUploadedFile] = React.useState<File | null>(null)
      const [isLoading, setIsLoading] = React.useState<boolean>(false)
-    //  const {mutate, isLoading} =useMutation({
-    //     mutationFn: async (
-    //         [file_name, file_key]:[file_name: string, file_key: string]
-    //     ) => {
-    //         const response = await axios.post("/api/create-chat", {
-    //             file_name,
-    //             file_key})
-    //         return response.data
-    //     },
-
-
-    //  })
     // cloudName: "dunssu2gi",
     //       uploadPreset: "zao6hc4d",
     const {getRootProps, getInputProps} = useDropzone(
@@ -55,14 +56,14 @@ const FileUpload = () => {
 
                     setFile(acceptedFiles[0])
                     console.log(file);
-                    await handleCloudinaryUpload(file)
+                    
                     setTimeout(() => {
                         setUploading(false)
                     }
                     , 1000)
 
                     
-                    // handleCloudinaryUpload()
+                
                 } catch (error) {
                     console.log(error);
                     toast.error("Something went wrong")
@@ -87,39 +88,51 @@ const FileUpload = () => {
         setFileKey(data.public_id)
         setFileName(data.original_filename)
 
+        // api call to save the file to the database - interface CloudinaryAsset POST /api/upload
+        const response = await axios.post<CloudinaryAsset>("/api/uploadpdf", {
+            asset_id: data.asset_id,
+            bytes: data.bytes,
+            format: data.format,
+            height: data.height,
+            original_filename: data.original_filename,
+            pages: data.pages,
+            placeholder: data.placeholder,
+            public_id: data.public_id,
+            resource_type: data.resource_type,
+            secure_url: data.secure_url
+        })
+        const resData = response.data
+        if(resData) {
+            toast.success("File uploaded successfully")
+            router.push("/")
+        }
+        
+        console.log("resData", resData);
+
+
+        
+                    
         if(!data) {
             toast.error("Something went wrong")
             return
         }
-        console.log(`file name: ${file_name}`);
-        console.log(`file key: ${file_key}`);
         
-        // mutate([ file_name, file_key],{
-        //     onSuccess: (chat_id) => {
-        //        toast.success('chat created')
-        //         router.push(`/chat/${chat_id}`)
-               
-                
-        //     },
-        //     onError: (error) => {
-        //         toast.error('File upload failed')
-        //         console.log(error);
-        //     }
-
-        // })
-
+ 
       
        }
 
     }
-    // React.useEffect(() => {
-    //     if (file) {
-    //         handleCloudinaryUpload()
-    //     }
-    // }, [file])
+    React.useEffect(() => {
+        if (file) {
+            handleCloudinaryUpload(file)
+        }
+    }, [file])
 
   return (
+    <Card className="p-2 bg-white rounded-xl my-4">
+
     <div className="p-2 bg-white rounded-xl">
+        <h3 className="text-lg font-semibold text-gray-800">Upload PDF (Resources)</h3>
         <div {...getRootProps()}
             className="w-full h-32 flex justify-center items-center border-2 border-gray-300 border-dashed rounded-xl cursor-pointer flex-col"
             suppressHydrationWarning
@@ -128,7 +141,9 @@ const FileUpload = () => {
             { uploading || isLoading ? (
                 <>
                 <Loader2 className="w-12 h-12 text-blue-800 animate-spin" />
-                <p className="text-gray-500 text-sm px-1 mt-2">spilling Tea on GPT...</p>
+                <p className="text-gray-500 text-sm px-1 mt-2">
+                    Uploading file please wait...
+                    </p>
                 </>
             ):(
                  <><Inbox className="w-12 h-12 text-gray-400" /><span
@@ -138,6 +153,7 @@ const FileUpload = () => {
            
             </div>
             </div>
+            </Card>
     
   )
 }

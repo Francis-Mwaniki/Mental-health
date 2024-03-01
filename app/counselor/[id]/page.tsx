@@ -1,15 +1,21 @@
 "use client";
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import React, { use, useEffect, useState } from "react"
-import { CheckCircle, Loader2, Verified, VerifiedIcon } from "lucide-react";
+import { CheckCircle, Edit, Loader2, Verified, VerifiedIcon, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
 import { Textarea } from "@/components/ui/textarea";
+import Uploader from "@/components/uploader";
 import { Label } from "@radix-ui/react-label";
 import toast from "react-hot-toast";
 import RequestCard from "@/components/RequestCard";
+import FileUpload from "@/components/FileUploader";
+interface UserProfile {
+  profile_pic: string | null;
+}
 interface Request {
   id: string;
   name: string;
@@ -60,6 +66,21 @@ export default function Component({params}: Props) {
  const [bookingEmail, setBookingEmail] = useState('');
  const [bookingName, setBookingName] = useState('');
  const [requests, setRequests] = useState<Request[]>([]);
+ const [isOpen, setIsOpen] = useState(false)
+ const [isShowProfileUpload, setIsShowProfileUpload] = useState(false)
+const [isPreviewOpen, setIsPreviewOpen] = useState(false)
+const [isUploading, setIsUploading] = useState(false)
+const [previewImg, setPreviewImg] = useState<string | ArrayBuffer | null>('')
+const [uploadProgress, setUploadProgress] = useState(0)
+const [cloudinaryImgUrl, setCloudinaryImgUrl] = useState('')
+const [isUploadingError, setIsUploadingError] = useState(false)
+const [isUploadingSuccess, setIsUploadingSuccess] = useState(false)
+const [uploadErrorMessage, setUploadErrorMessage] = useState('')
+const [uploadSuccessMessage, setUploadSuccessMessage] = useState('')
+const [image, setImage] = useState('')
+const [picUser, setPicUser] = useState<UserProfile>({
+    profile_pic: '',
+  })
  const [isFetchingRequests, setIsFetchingRequests] = useState(false);
  const availableHours = Array.from({ length: 10 }, (_, index) => index + 8)
   const [user, setUser] = useState<Counselor>({
@@ -77,6 +98,111 @@ export default function Component({params}: Props) {
     password: '',
     profilePicture: ''
 });
+
+const handleZoom = () => {
+  setIsOpen(true)
+}
+const handlePreviewZoom = () => {
+  setIsPreviewOpen(true)
+}
+
+
+const browseImageOnly = (e: any) => {
+const file = e.target.files[0]
+if (file) {
+  const reader = new FileReader()
+  reader.onloadend = () => {
+    setPreviewImg(reader.result)
+  }
+  reader.readAsDataURL(file)
+}
+}
+React.useEffect(() => {
+  if (picUser.profile_pic) {
+    setImage(picUser.profile_pic);
+  }
+  if (previewImg) {
+    setImage(previewImg.toString());
+  }
+}, [picUser.profile_pic, previewImg]);
+
+React.useEffect(() => {
+  if (cloudinaryImgUrl) {
+    setCloudinaryImgUrl(cloudinaryImgUrl);
+  }
+}, [cloudinaryImgUrl]);
+
+const uploadOnlyImage = async () => {
+  // /api/auth/counselor/upload_profile_pic
+  setIsUploading(true);
+  const res = await fetch(`/api/auth/counselor/upload_profile_pic`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ id: user.id, profile_pic: cloudinaryImgUrl })
+  });
+
+  const data = await res.json();
+  console.log(data);
+
+  if (data.status === 200) {
+    setIsUploading(false);
+    console.log(data.message);
+    setTimeout(() => {
+      new Audio('/soundplan.wav').play()
+      toast.success('Nice profile kudos!', {
+        style: {
+          border: '1px solid #713200',
+          padding: '16px',
+          color: '#713200',
+        },
+        duration: 4000,
+        iconTheme: {
+          primary: '#713200',
+          secondary: '#FFFAEE',
+        },
+        
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }
+      , 600)
+    }, 4000);
+  }
+
+  if (
+    data.status === 400 ||
+    data.status === 500 ||
+    data.status === 404 ||
+    data.status === 401 ||
+    data.status === 405
+  ) {
+    setIsUploading(false);
+    console.log(data.message);
+  }
+}
+const handleUploadSuccess = (uploadedUrl: string) => {
+  setCloudinaryImgUrl(uploadedUrl);
+  setIsUploadingSuccess(true);
+  toast.success('successfully converted', {
+    style: {
+      border: '1px solid #713200',
+      padding: '16px',
+      color: '#713200',
+    },
+    duration: 4000,
+    iconTheme: {
+      primary: '#713200',
+      secondary: '#FFFAEE',
+    },
+    
+  });
+  setTimeout(() => {
+    setIsUploadingSuccess(false);
+    setUploadSuccessMessage('');
+  }, 3000);
+};
 
 useEffect(() => {
   if (localStorage.getItem('conselor')) {
@@ -399,21 +525,24 @@ useEffect(() => {
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="space-y-4 lg:pr-4">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 overflow-hidden rounded-full">
+            <div className="w-12 h-12 overflow-hidden rounded-full flex flex-col justify-start items-start">
               <img
                 alt="Image"
                 className="bg-gray-200 dark:bg-gray-800"
                 height="64"
-                src={`https://ui-avatars.com/api/?background=random&name=${user.firstName}+${user.lastName}`}
+                src={`${user.profilePicture ? user.profilePicture : `https://ui-avatars.com/api/?background=random&name=${user.firstName}+${user.lastName}`}`}
                 style={{
                   aspectRatio: "64/64",
                   objectFit: "cover",
                 }}
                 width="64"
               />
+            
+             
             </div>
             <div className="space-y-1">
-             
+              
+           
               <h1 className="text-2xl font-bold ">
                <span className=" "> {user.firstName} {user.lastName} </span>
               </h1>
@@ -428,8 +557,194 @@ useEffect(() => {
                 id-{id}
               </Button>
             </div>
+            <a onClick={() => setIsShowProfileUpload(!isShowProfileUpload)} className="cursor-pointer  flex justify-start items-start gap-x-1">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Update Profile Pic
+              </span>
+              <Edit size={20} className="text-black" />
+              </a>
           </div>
+           {/* starts image updates */}
+           <Card className={`p-2 ${isShowProfileUpload ? 'bg-green-50' : 'bg-green-100 hidden'}`}>
+ {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50">
+          <div className="relative w-full max-w-3xl h-full overflow-hidden">
+            <button
+              className="absolute top-0 right-0 z-50 flex items-center justify-center w-10 h-10 text-2xl font-bold text-white bg-gray-900 rounded-full"
+              onClick={() => setIsOpen(false)}
+            >
+             <X className=" h-7 text-white" />
+            </button>
+            <div className="relative w-full h-full">
+              <Image
+                src={picUser.profile_pic ? picUser.profile_pic : image}
+                alt=""
+                layout="fill"
+                objectFit="contain"
+                className="w-full h-full"
+              />
+              {
+                 /* fetching image skeleton */
+                !picUser.profile_pic && (
+                  <div className="absolute  inset-0 flex items-center justify-center w-full h-full bg-gray-500 animate-pulse"></div>
+                )
+              }
+            </div>
+          </div>
+        </div>
+      )}
+      {/* dialog for image on zoom */}
+      {isPreviewOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50">
+        <div className="relative w-full max-w-3xl h-full overflow-hidden">
+          <button
+            className="absolute top-0 right-0 z-50 flex items-center justify-center w-10 h-10 text-2xl font-bold text-white bg-gray-900 rounded-full"
+            onClick={() => setIsPreviewOpen(false)}
+          >
+           <X className=" h-7 text-white" />
+          </button>
+          <div className="relative w-full h-full">
+          <Image
+                src={previewImg ? previewImg.toString() : image}
+                alt=""
+                layout="fill"
+                objectFit="contain"
+                className="w-full h-full"
+              />
+           
+          </div>
+        </div>
+                <Image 
+            src={picUser.profile_pic ? picUser.profile_pic : image}
+            alt="" 
+            width={100} height={100}
+            onClick={handleZoom}
+            className=" w-32 h-32 rounded-full 
+            object-cover object-center
+            p-2
+            border-2 border-blue-100 dark:border-blue-100
+            transition duration-300 ease-in-out
+            
+            hover:scale-105 hover:rotate-12
+            transform hover:shadow-xl
+            cursor-pointer"
+        />
+          
           <div className="space-y-2">
+                  {
+                    /* is uploading */
+                    isUploading && (
+                      /* loading progress */
+                      <div className="flex items-center justify-center w-full h-10 bg-gray-300 dark:bg-gray-800 animate-pulse">
+                        <span className="text-gray-500">{uploadProgress}%</span>
+                      </div>
+                    )
+                  }
+                  {
+                    /* is uploading error */
+                    isUploadingError && (
+                      <span className="text-red-500">{uploadErrorMessage}</span>
+                    )
+                  }
+                  {
+                    /* is uploading success */
+                    isUploadingSuccess && (
+                      <span className="text-green-500">{uploadSuccessMessage}</span>
+                    )
+                  }
+                  {
+                    /* preview */
+                    previewImg && (
+                      <div className="relative w-40 mx-auto h-40">
+                        <Image
+                          src={previewImg.toString()}
+                          alt=""
+                          onClick={handlePreviewZoom}
+                          layout="fill"
+                          objectFit="contain"
+                          className="w-40 h-40 rounded-full ring-4 ring-blue-700 cursor-pointer
+                          object-cover object-center
+                border-2 border-blue-200 dark:border-blue-800
+                transition duration-300 ease-in-out
+                  dark:ring-blue-800
+                hover:scale-105 hover:rotate-12
+                transform hover:shadow-xl
+                
+                          "
+                        />
+                      </div>
+                    )
+                  }
+            
+                 
+                </div>
+      </div>
+       
+      )}
+ <CardFooter>
+                {
+                  previewImg && (
+                   <Uploader previewImg={previewImg}  onUploadSuccess={handleUploadSuccess}/>
+                  )
+                }
+              </CardFooter>
+              {
+                previewImg && (<>
+                  <Image 
+            src={previewImg ? previewImg.toString() : image}
+            alt=""
+            width={100} height={100}
+            className=" w-32 h-32 rounded-full
+            object-cover object-center
+            p-2
+            border-2 border-blue-100 dark:border-blue-100
+            transition duration-300 ease-in-out
+            hover:scale-105 hover:rotate-12
+            transform hover:shadow-xl
+            cursor-pointer"
+        />
+                </>)
+              }
+              <CardFooter>
+
+                {
+                  previewImg && (
+                    <div className="flex gap-x-3">
+                      <Button className="ml-auto"
+                  onClick={uploadOnlyImage}
+                  disabled={isUploading}
+                
+                >
+                  { isUploading ? 'Uploading...' : 'Upload'}
+                </Button>
+                {/* remove */}
+                <Button className="ml-auto"
+                onClick={() => {
+                  setPreviewImg(null);
+                  
+                }
+                }
+                >
+                  Remove
+                </Button>
+                    </div>
+                  )
+                }
+              </CardFooter>
+             {
+              isShowProfileUpload && (<>
+               <Label  className=" my-2" htmlFor="profilePicture">Update Profile Pic</Label>
+                  <Input id="profilePicture"
+                    onChange={browseImageOnly}
+                   placeholder="Upload your picture" type="file"
+                    accept="image/*"
+                    />
+              </>)
+             }
+    </Card>
+              {/* end image updates */}
+          <div className="space-y-2">
+
             <h2 className="text-lg font-semibold">Bio</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {user.message}
@@ -495,6 +810,14 @@ useEffect(() => {
    
       {
               isCounselor && (<>
+
+
+           <Card className=" my-2 p-2">
+            <FileUpload />
+           </Card>
+
+
+
               <CardDescription className=" font-extrabold text-2xl justify-center items-center mx-auto flex m-5">
                 All Booking Requests
               </CardDescription>
