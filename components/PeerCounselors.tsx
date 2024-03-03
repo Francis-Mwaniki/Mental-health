@@ -124,7 +124,7 @@ export default function Component() {
                         </span></span>
                     </CardHeader>
                     <CardContent>
-                      <a href={`/counselor/${counselor.id}?token=${token}?counselor=true`}>
+                      <a href={`/peerCounselor/${counselor.id}?token=${token}?counselor=true`}>
                         <Button className="w-full 
                         flex items-center justify-center
                         " type="submit">
