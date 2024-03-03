@@ -3,16 +3,18 @@ import Link from "next/link"
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar"
 import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card"
 import { JSX, SVGProps, useEffect, useRef, useState } from "react"
-import { ArrowDownLeftSquare, ArrowUp, ExternalLink, HeartPulse, LucideFrame } from "lucide-react"
+import { ArrowUpRightIcon, ArrowUp, ExternalLink, HeartPulse, LucideFrame, MessageSquareTextIcon, Sparkles } from "lucide-react"
 import  Resources  from "@/components/addsResources"
 import Image from "next/image"
 import  Counsellors  from "@/components/Counsellors"
+import  PeerCounselor  from "@/components/PeerCounselors"
 import Testimonial from "@/components/Testimonial"
 export default function Component() {
   const [selectedText, setSelectedText] = useState<string | null>(null);
   const [selectedTextPosition, setSelectedTextPosition] = useState<{ x: number; y: number } | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [showControlledTooltip, setShowControlledTooltip] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   // const handleSelectionChange = () => {
   //   const selection = window.getSelection();
   //   if (selection) {
@@ -46,6 +48,11 @@ export default function Component() {
       section.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+
+  const toggleMode = () => {
+    setIsOpen(!isOpen);
+  }
 
   useEffect(() => {
     localStorage.setItem('username', 'Guest');
@@ -99,48 +106,46 @@ export default function Component() {
           </span>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6 ">
-          <a onClick={handleClickSection.bind(null,'home')} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-1 hover:underline transition-all duration-500 
+          <a onClick={handleClickSection.bind(null,'home')} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-950 ring-1 ring-neutral-50  hover:bg-neutral-500 text-white  lowercase rounded-md  px-3 py-1 hover:underline transition-all duration-500 
            
           " href="#">
             <span>Home</span>
-            <ArrowDownLeftSquare className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
+            <ArrowUpRightIcon className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
           </a>
-          <a onClick={handleClickSection.bind(null,'resources')} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-1 hover:underline transition-all duration-500 " href="#">
+          <a onClick={handleClickSection.bind(null,'resources')} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-950 ring-1 ring-neutral-50  hover:bg-neutral-500 text-white  lowercase rounded-md  px-3 py-1 hover:underline transition-all duration-500 " href="#">
             <span>Resources</span>
-            <ArrowDownLeftSquare className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
+            <ArrowUpRightIcon className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
           </a>
-          <a onClick={handleClickSection.bind(null,'contact')} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-1 hover:underline transition-all duration-500 " href="#">
+          <a onClick={handleClickSection.bind(null,'contact')} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-950 ring-1 ring-neutral-50  hover:bg-neutral-500 text-white  lowercase rounded-md  px-3 py-1 hover:underline transition-all duration-500 " href="#">
             <span>Contact</span>
-            <ArrowDownLeftSquare className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
+            <ArrowUpRightIcon className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
           </a>
-          <a onClick={handleClickSection.bind(null,'counselor')} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-1 hover:underline transition-all duration-500 " href="#">
+          <a onClick={handleClickSection.bind(null,'counselor')} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-950 ring-1 ring-neutral-50  hover:bg-neutral-500 text-white  lowercase rounded-md  px-3 py-1 hover:underline transition-all duration-500 " href="#">
             <span>Counselors</span>
-            <ArrowDownLeftSquare className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
+            <ArrowUpRightIcon className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
           </a>
           {/* testimonial */}
-          <a onClick={handleClickSection.bind(null,'testimonials')} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-1 hover:underline transition-all duration-500 " href="#">
+          <a onClick={handleClickSection.bind(null,'testimonials')} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-950 ring-1 ring-neutral-50  hover:bg-neutral-500 text-white  lowercase rounded-md  px-3 py-1 hover:underline transition-all duration-500 " href="#">
             <span>Testimonials</span>
-            <ArrowDownLeftSquare className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
+            <ArrowUpRightIcon className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
           </a>
            
           {/* getStarted */}
           <a 
           onClick={handleClickSection.bind(null,'getStarted')}
-          className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-900 hover:bg-neutral-700 text-white rotate-0 hover:rotate-6 rounded-md  px-3 py-1 hover:underline transition-all duration-500 " >
+          className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-950 ring-1 ring-neutral-50  hover:bg-neutral-500 text-white  lowercase rounded-md  px-3 py-1 hover:underline transition-all duration-500 " >
            
             <span>Get Started</span>
-            <ArrowDownLeftSquare className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
+            <ArrowUpRightIcon className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
             
           </a>
         </nav>
       </header>
       {/* mobile  */}
-      <header className="sm:hidden flex items-center justify-between bg-transparent
-       opacity-90  px-4 py-4 border-b fixed z-50 top-0 inset-x-0
-        backdrop-filter backdrop-blur-lg
-        dark:bg-neutral-900 dark:border-neutral-800 dark:text-[#f5f5f5]
-        border-neutral-100/10 dark:border-neutral-900/10
-       ">
+      <header className={`sm:hidden flex items-center justify-between 
+         px-4 py-4 border-b fixed z-50 top-0 inset-x-0
+          ${isOpen ? 'bg-black' : 'backdrop-filter bg-transparent backdrop-blur-lg dark:bg-neutral-900 dark:border-neutral-800 dark:text-[#f5f5f5] border-neutral-100/10 dark:border-neutral-900/10'}
+       `}>
         <Link className="flex items-center justify-center" href="#">
           <LucideFrame className="h-8 w-8 mr-2" />
           <span className="sr-only">
@@ -150,30 +155,54 @@ export default function Component() {
         <button
           aria-label="Open Menu"
           className="p-2 -mr-2 -mb-2"
-          onClick={() => {
-            const nav = document.getElementById('nav');
-            if (nav) {
-              nav.classList.toggle('hidden');
-            }
-          }}
+          onClick={toggleMode}
         >
-          <svg
-            className="w-6 h-6 text-gray-900 dark:text-[#f5f5f5]"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path d="M4 6h16M4 12h16m-7 6h7" />
-          </svg>
+         {
+          
+            isOpen ? (
+              <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className={`w-6 h-6 ${isOpen ? 'text-white' : 'text-black'}`}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+            ) : (
+              <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className={`w-6 h-6 ${isOpen ? 'text-white' : 'text-black'}`}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              />
+            </svg>
+            )
+         }
         </button>
       </header>
-      <nav
+      {
+        isOpen && (<>
+          <nav
         id="nav"
         className=" sm:hidden flex flex-col gap-4 items-center justify-center 
-        w-full h-screen bg-neutral-900 opacity-90 fixed  dark:bg-neutral-800 text-white  top-16 left-0 z-40
+        w-full h-screen bg-black  fixed  dark:bg-neutral-800 text-white  top-16 left-0 z-40
         backdrop-filter backdrop-blur-lg
         transition-all duration-500 ease-in-out
         "
@@ -197,10 +226,13 @@ export default function Component() {
         </a>
         <a 
         onClick={handleClickSection.bind(null,'getStarted')}
-        className="text-lg font-medium bg-white hover:bg-gray-100 text-black w-full justify-center flex justify-self-center items-center  rounded-md  px-3 py-2 hover:underline transition-all duration-500 " >
+        className="text-lg font-medium bg-white hover:bg-gray-100 text-black w-[80%] justify-center flex justify-self-center items-center  rounded-md  px-3 py-2 mx-4 space-x-3 hover:underline transition-all duration-500 " >
           Get Started
         </a>
       </nav>
+        </>)
+      }
+    
       <main className="flex-1 relative">
         <section className="w-full pt-24 dark:bg-neutral-900 
         dark:text-[#f5f5f5] bg-gradient-to-b from-neutral-900 to-neutral-800/none
@@ -266,15 +298,25 @@ export default function Component() {
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-5xl/none">
               G E T &nbsp; S T A R T E D
             </h2>
-            <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <Card className="w-full flex p-4  flex-col justify-center items-center mx-auto sm:max-w-3xl gap-3">
+ <Card className="w-full flex p-4 justify-center items-center mx-auto">
+              <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
               <Link
               href={'/chat/ai'}
-               className="w-full sm:w-auto group">
-                <span className="w-full sm:w-auto flex items-center justify-center  bg-neutral-900 shadow-2xl rounded-md px-6 py-3 text-white font-medium text-lg/none hover:shadow-lg transition-all duration-300 ease-in-out">
-                <span> Chat with our Ai Counselor</span>
-                <span><ExternalLink className="w-6 h-6 ml-2
+               className="w-full sm:w-auto group shadow-lg shadow-white ring-neutral-900 ring rounded-lg">
+                <span className="w-full sm:w-auto flex items-center justify-center   shadow-2xl rounded-md px-6 py-3  bg-gradient-to-r from-pink-500 to-red-500
+                bg-clip-text text-transparent font-medium text-lg/none hover:shadow-lg transition-all duration-300 ease-in-out">
+                <span >Ai Counselor</span>
+                <span><Sparkles className="w-6 h-6 ml-2  animate-pulse
                 group-hover:animate-bounce
-                " /></span>
+                text-blue-500
+                
+
+                " />
+                
+
+
+                </span>
                 </span>
               </Link>
               <a
@@ -282,10 +324,10 @@ export default function Component() {
                className="w-full sm:w-auto cursor-pointer group" >
                 <span className="w-full sm:w-auto flex items-center justify-center  bg-neutral-900 shadow-2xl rounded-md px-6 py-3 text-white font-medium text-lg/none hover:shadow-lg transition-all duration-300 ease-in-out">
                   <span>
-                  Book an Appointment
+                  Book Meeting
                   </span>
                   <span>
-                    <ExternalLink className="w-6 h-6 ml-2
+                    <MessageSquareTextIcon className="w-6 h-6 ml-2
                     group-hover:animate-bounce
                     " />
                   </span>
@@ -294,13 +336,26 @@ export default function Component() {
               </a>
               
             </div>
+            </Card>
+            
+            <Card className="w-full   max-w-5xl flex p-4 justify-center items-center mx-auto">
             {/* login as a conselor  */}
-            <a href="/auth/login" className="text-sm group text-blue-600  hover:text-blue-700 flex flex-row gap-x-2 rotate-0 hover:rotate-3  scale-90 hover:scale-105 justify-center items-center italic  border-b-2 border-solid hover:border-dashed border-blue-600  hover:border-blue-800 no-underline  font-medium  border-s-orange-700 underline-offset-4">
+            <a href="/auth/login" className="text-sm group text-blue-600 hover:underline  hover:text-blue-700 flex flex-row gap-x-2   justify-center items-center italic   no-underline  font-medium  border-s-orange-700 underline-offset-4">
               <span>Login as a Counselor </span>
-              <ArrowDownLeftSquare  className="w-6 h-6
+              <ArrowUpRightIcon  className="w-6 h-6
               group-hover:animate-bounce
               " />
               </a>
+              <div className="w-1 h-7 bg-gray-950 mx-4"></div>
+              <a href="/peerAuth/login" className="text-sm group text-blue-600 hover:underline  hover:text-blue-700 flex flex-row gap-x-2   justify-center items-center italic     no-underline  font-medium  border-s-orange-700 underline-offset-4">
+              <span>Login as a Peer Counselor </span>
+              <ArrowUpRightIcon  className="w-6 h-6
+              group-hover:animate-bounce
+              " />
+              </a>
+            </Card>
+            </Card>
+           
           </div>
         </section>
          
@@ -308,6 +363,12 @@ export default function Component() {
         id="counselor"
         className="w-full py-16 md:py-16 lg:py-24">
          <Counsellors />
+
+        </section>
+        <section 
+        id="peerCounselor"
+        className="w-full py-16 md:py-16 lg:py-24">
+         <PeerCounselor />
 
         </section>
         <section 

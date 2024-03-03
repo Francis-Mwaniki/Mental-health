@@ -39,7 +39,7 @@ export default function Component() {
   const fetchCounselors = async () => {
     setLoading(true);
     try {
-      let res = await fetch("/api/counselor/getall");
+      let res = await fetch("/api/peerCounselor/getall");
       let data = await res.json();
       if(data.status === 401 || data.status === 400 || data.status === 500){
         console.error(data.message);
@@ -66,8 +66,10 @@ export default function Component() {
 
   return (
     <div className=" dark:bg-neutral-950 dark:text-white">
-     <h1 className="text-4xl text-center  font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-            C O U N S E L O R S
+     <h1 className="text-4xl text-center  font-bold tracking-tighter sm:text-5xl xl:text-6xl/none flex flex-col sm:flex-row justify-center items-center mx-auto gap-x-1 sm:gap-x-3">
+          <span>  P E E R</span>
+            -
+             <span>C O U N S E L O R S</span>
         </h1>
         <p className="text-center">
             Meet our team of professional counselors
@@ -96,7 +98,6 @@ export default function Component() {
                     hover:-translate-x-0
                     group
                     ">
-
                     <CardHeader>
                        <img 
                        className="rounded-full h-20 w-20
@@ -139,11 +140,10 @@ export default function Component() {
                     </Card>
                 ))}
 
-
-        
      
 
     </div>
+
     {
                     counselors.length === 0 && (
                       <div className="flex items-center justify-center flex-col">
@@ -155,6 +155,8 @@ export default function Component() {
                       </div>
                     )
                 }
+
+        
           </>)
         }
           

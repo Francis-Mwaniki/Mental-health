@@ -51,7 +51,6 @@ const ChatPage = ({ socket, username, roomId , onMessageSent}: RoomProps) => {
   const logout = () => {
     
     localStorage.removeItem('user');
-    localStorage.removeItem('counselorName');
     localStorage.removeItem('token');
     localStorage.removeItem('roomId');
     localStorage.removeItem('id');

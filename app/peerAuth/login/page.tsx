@@ -28,7 +28,7 @@ export default function Component() {
       setError("");
 
       try {
-        let res =await fetch("/api/auth/login", {
+        let res =await fetch("/api/auth/peerLogin", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export default function Component() {
           localStorage.setItem("username", JSON.stringify(data.user.firstName + " " + data.user.lastName));
           localStorage.setItem("conselor", 'true');
           localStorage.setItem("counselorName", data.user.firstName + " " + data.user.lastName);
-         window.location.href = `/counselor/${data.user.id}?token=${token}?counselor=${counselor}`;
+         window.location.href = `/peerCounselor/${data.user.id}?token=${token}?counselor=${counselor}`;
 
           
       
@@ -71,7 +71,7 @@ export default function Component() {
         <span className="text-red-600 py-3 flex justify-center items-center mx-auto">{error}</span>
         <div className="flex items-center">
           <KeyIcon className="h-6 w-6 mr-2" />
-          <CardTitle className="text-2xl font-bold">Login Counselor</CardTitle>
+          <CardTitle className="text-2xl font-bold">Login</CardTitle>
         </div>
         
       </CardHeader>
@@ -93,13 +93,13 @@ export default function Component() {
            {
               loading ? (<>
                <Loader className="animate-spin h-5 w-5 mr-3" />
-              </>): " Login Counselor"
+              </>): " Login"
            }
           </Button>
         </form>
         <div className="flex justify-center space-x-2 py-2">
             {/* <a href="/auth/reset-password" className="text-blue-600 hover:underline">Forgot Password?</a> */}
-            <a href="/auth/register" className="text-blue-600 hover:underline">Apply as Counselor</a>
+            <a href="/peerAuth/register" className="text-blue-600 hover:underline">Apply as Peer Counselor</a>
         </div>
 
 
