@@ -134,7 +134,7 @@ React.useEffect(() => {
 const uploadOnlyImage = async () => {
   // /api/auth/counselor/upload_profile_pic
   setIsUploading(true);
-  const res = await fetch(`/api/auth/counselor/upload_profile_pic`, {
+  const res = await fetch(`/api/auth/peerCounselor/upload_profile_pic`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -216,7 +216,7 @@ useEffect(() => {
   //fetching user
   const fetchUser = async () => {
     setIsFetching(true)
-    const res = await fetch(`/api/counselor/`, {
+    const res = await fetch(`/api/peerCounselor/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -263,7 +263,7 @@ useEffect(() => {
    //fetching all requests booked by user
    const fetchRequests = async () => {
     setIsFetchingRequests(true)
-    const res = await fetch(`/api/auth/counselor/requests`, {
+    const res = await fetch(`/api/auth/peerCounselor/requests`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -312,7 +312,7 @@ useEffect(() => {
       setIsCheckingHour(true);
   
      // api call to check if the hour is available -api/auth/counselor/bookings/precheck
-      const url = `/api/auth/counselor/booking/precheck`;
+      const url = `/api/auth/peerCounselor/booking/precheck`;
       const options = {
         method: 'POST',
         headers: {
@@ -405,7 +405,7 @@ useEffect(() => {
     }
     // /api/auth/counselor/booking
     setIsBooking(true);
-    const res = await fetch(`/api/auth/counselor/booking`, {
+    const res = await fetch(`/api/auth/peerCounselor/booking`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -548,7 +548,7 @@ useEffect(() => {
               </h1>
                <div className="flex  items-start  flex-row mx-auto justify-start">
                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                  Verified
+                  Verified 
                 </span>
                 <VerifiedIcon size={20} className=" text-green-500" />
                 
@@ -812,9 +812,9 @@ useEffect(() => {
               isCounselor && (<>
 
 
-           <Card className=" my-2 p-2">
+           {/* <Card className=" my-2 p-2">
             <FileUpload />
-           </Card>
+           </Card> */}
 
 
 

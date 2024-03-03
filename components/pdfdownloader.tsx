@@ -363,12 +363,15 @@ const YourComponent: React.FC<CardProps> = ({ resource }) => {
                     )
                     }
                 <CardHeader>
-                <CardTitle>{resource.original_filename}</CardTitle>
+                <CardTitle>{resource.original_filename. length > 20 ? resource.original_filename.substring(0, 20) + '...' : resource.original_filename}
+                </CardTitle>
                 </CardHeader>
-                <CardContent className='flex justify-center items-center'>
-                <CardContent>pages {resource.pages}</CardContent>
-                <CardContent>format {resource.format}</CardContent>
-                <CardContent>size {resource.bytes}</CardContent>
+                <CardContent className='flex justify-center items-center  mx-auto'>
+                <CardContent className='flex justify-center items-center  mx-auto gap-x-1'><span>format</span> <span>{resource.format}</span></CardContent>
+                <CardContent className='flex justify-center items-center  mx-auto gap-1'><span>size </span><span>{
+                resource ? resource.bytes / 1000 : 0
+                }</span><span> kb</span>
+                </CardContent>
                 </CardContent>
                
              
