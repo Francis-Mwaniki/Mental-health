@@ -2,20 +2,24 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 //TemplateID:  d-20c6e30370374c6ca63b6f0179ccf14a
-import sendgrid from "@sendgrid/mail";
+// import sendgrid from "@sendgrid/mail";
+import nodemailer from 'nodemailer';
+
 
 const prisma = new PrismaClient();
 
-sendgrid.setApiKey(process.env.SENDGRID_API_KEY!);
+// sendgrid.setApiKey(process.env.SENDGRID_API_KEY!);
 // book counselor
 export async function POST(req: Request, res: Response) {
-    if(!process.env.SENDGRID_API_KEY) {
-        console.log("SENDGRID_API_KEY is not set");
-        
-        return  NextResponse.json({ message: "Invalid request", 
-        status: 400
-       });
-      }
+  let transporter = nodemailer.createTransport({
+    host: 'smtp-relay.brevo.com',
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: 'wearsworks@gmail.com', // Add your username here
+      pass: 'AYcB4Sy65MJEDzsF', // Use your master password here
+    },
+  });
   try {
     const data = await req.json();
     console.log("data",data);
@@ -123,7 +127,31 @@ export async function POST(req: Request, res: Response) {
         templateId: 'd-02f228bbf32e4eacac163c274f27c920',
       };
         try {
-          await sendgrid.send(mail);
+          let info = await transporter.sendMail({
+            from: '"WearsWorks 👻" <wearsworks@gmail.com>', // sender address
+              to: user.email, // list of receivers
+                subject: 'New Booking', // Subject line
+                text: 'Hello world?', // plain text body
+                //white background color for the email and black for the text
+                html: ` 
+                <body style="font-family: 'Inter', sans-serif; padding: 20px; background-color: #fff; color: #000;">
+                <h1 style="color: #000;">New Booking</h1>
+                <h2>Dear ${user.firstName},</h2>
+                <p>You have a new booking from ${data.name} at ${data.hour}:00-${parseInt(data.hour) + 1}:00</p>
+                <p>Message: ${data.message}</p>
+                <p>Share Meeting Link: ${data.shareMeetingLink}</p>
+
+                
+      
+      
+                <p>Thank you for using our service!</p>
+      
+                <p>Bookers Team</p>
+                `
+              });
+        
+              console.log('Message sent: %s', info);
+              // console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
           console.log("email sent");
           
         } catch (error: any) {

@@ -26,7 +26,7 @@ export default function Component() {
   const [showControlledTooltip, setShowControlledTooltip] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [testimonials, setTestimonials] = useState<TestimonialProps["testimonials"]>([]);
-  const superUser ="65e0a6b9c56e8b89f6e0c106"
+  const superUser ="65f0b22d4d9ce34bc12a8e27"
 const [isSuperUser, setIsSuperUser] = useState(false);
 const [superUserId, setSuperUserId] = useState('');
 const router = useRouter();
