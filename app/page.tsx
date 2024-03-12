@@ -3,13 +3,14 @@ import Link from "next/link"
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar"
 import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card"
 import { JSX, SVGProps, useEffect, useRef, useState } from "react"
-import { ArrowUpRightIcon, ArrowUp, ExternalLink, HeartPulse, LucideFrame, MessageSquareTextIcon, Sparkles } from "lucide-react"
+import { ArrowUpRightIcon, ArrowUp, ExternalLink, HeartPulse, LucideFrame, MessageSquareTextIcon, Sparkles, LogOut } from "lucide-react"
 import  Resources  from "@/components/addsResources"
 import Image from "next/image"
 import  Counsellors  from "@/components/Counsellors"
 import  PeerCounselor  from "@/components/PeerCounselors"
 import Testimonial from "@/components/Testimonial"
 import { useRouter } from "next/navigation"
+import toast from "react-hot-toast"
 interface TestimonialProps {
   testimonials: {
     id: number;
@@ -43,6 +44,29 @@ useEffect(() => {
   superUserId,router
 ]);
 
+const logout = () => {
+    
+  localStorage.removeItem('user');
+  localStorage.removeItem('token');
+  localStorage.removeItem('roomId');
+  localStorage.removeItem('id');
+  localStorage.removeItem('username');
+  localStorage.removeItem('email');
+  localStorage.removeItem('userId');
+  window.location.href = '/';
+  toast.success('logged out', {
+    style: {
+      border: '1px solid #713200',
+      padding: '16px',
+      color: '#713200',
+    },
+    iconTheme: {
+      primary: '#713200',
+      secondary: '#FFFAEE',
+    },
+  });
+  
+};
 
 
 
@@ -216,6 +240,24 @@ useEffect(() => {
             <ArrowUpRightIcon className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
             
           </a>
+          {
+            isSuperUser && (
+              <a href="/admin" className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-950 ring-1 ring-neutral-50  hover:bg-neutral-500 text-white  lowercase rounded-md  px-3 py-1 hover:underline transition-all duration-500 " >
+           
+            <span>Admin Dashboard</span>
+            <ArrowUpRightIcon className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
+            </a>
+            )
+          }
+          {
+            superUserId && (
+              <a onClick={logout} className="text-sm flex flex-row justify-center items-center cursor-pointer group sm:text-lg font-medium hover:transition-all bg-neutral-950 ring-1 ring-neutral-50  hover:bg-neutral-500 text-white  lowercase rounded-md  px-3 py-1 hover:underline transition-all duration-500 " >
+           
+            <span>Logout</span>
+            <LogOut className="hidden w-6 h-6 group-hover:inline-block transition-all duration-500" />
+            </a>
+            )
+          }
         </nav>
       </header>
       {/* mobile  */}
@@ -298,14 +340,26 @@ useEffect(() => {
         <a onClick={handleClickSection.bind(null,'counselor')} className="text-lg font-medium hover:underline" href="#">
           Counselors
         </a>
-        <a onClick={handleClickSection.bind(null,'testimonials')} className="text-lg font-medium hover:underline" href="#">
-          Testimonials
-        </a>
+        
         <a 
         onClick={handleClickSection.bind(null,'getStarted')}
         className="text-lg font-medium bg-white hover:bg-gray-100 text-black w-[80%] justify-center flex justify-self-center items-center  rounded-md  px-3 py-2 mx-4 space-x-3 hover:underline transition-all duration-500 " >
           Get Started
         </a>
+        {
+          isSuperUser && (
+            <a href="/admin" className="text-lg font-medium bg-white hover:bg-gray-100 text-black w-[80%] justify-center flex justify-self-center items-center  rounded-md  px-3 py-2 mx-4 space-x-3 hover:underline transition-all duration-500 " >
+          Admin Dashboard
+        </a>
+          )
+        }
+        {
+          superUserId && (
+            <a onClick={logout} className="text-lg font-medium bg-white hover:bg-gray-100 text-black w-[80%] justify-center flex justify-self-center items-center  rounded-md  px-3 py-2 mx-4 space-x-3 hover:underline transition-all duration-500 " >
+          Logout
+        </a>
+          )
+        }
       </nav>
         </>)
       }
