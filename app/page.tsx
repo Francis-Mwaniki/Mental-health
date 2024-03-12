@@ -9,12 +9,50 @@ import Image from "next/image"
 import  Counsellors  from "@/components/Counsellors"
 import  PeerCounselor  from "@/components/PeerCounselors"
 import Testimonial from "@/components/Testimonial"
+import { useRouter } from "next/navigation"
+interface TestimonialProps {
+  testimonials: {
+    id: number;
+    name: string;
+    description: string;
+    rating: number;
+  }[];
+}
+
 export default function Component() {
   const [selectedText, setSelectedText] = useState<string | null>(null);
   const [selectedTextPosition, setSelectedTextPosition] = useState<{ x: number; y: number } | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [showControlledTooltip, setShowControlledTooltip] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [testimonials, setTestimonials] = useState<TestimonialProps["testimonials"]>([]);
+  const superUser ="65e0a6b9c56e8b89f6e0c106"
+const [isSuperUser, setIsSuperUser] = useState(false);
+const [superUserId, setSuperUserId] = useState('');
+const router = useRouter();
+useEffect(() => {
+  const userId = localStorage.getItem('userId');
+  if (userId) {
+    setSuperUserId(userId);
+  }
+  if (superUser === userId) {
+    setIsSuperUser(true);
+  }
+}
+, [
+  superUserId,router
+]);
+
+
+
+
+
+  useEffect(() => {
+    fetchTestimonials().then((data) => {
+      setTestimonials(data);
+    });
+  }
+  , []);
   // const handleSelectionChange = () => {
   //   const selection = window.getSelection();
   //   if (selection) {
@@ -42,6 +80,45 @@ export default function Component() {
   //     document.removeEventListener('selectionchange', handleSelectionChangeRef.current);
   //   };
   // }, []); // Empty dependency array ensures this effect runs only once during mount
+
+
+  const scrollPositionRef = useRef(0);
+
+  useEffect(() => {
+    // Save the current scroll position on mount
+    scrollPositionRef.current = window.scrollY;
+
+    // Scroll to the saved position after the page has rendered
+    window.scrollTo(0, scrollPositionRef.current);
+
+    window.addEventListener('scroll', () => {
+      scrollPositionRef.current = window.scrollY;
+    }
+    );
+
+    return () => {
+      window.removeEventListener('scroll', () => {
+        scrollPositionRef.current = window.scrollY;
+      }
+      );
+    };
+  }, []);
+
+  // fetch testimonials
+  const fetchTestimonials = async () => {
+    try {
+      const response = await fetch('/api/testimonials/getall');
+      const data = await response.json();
+      if (data.status === 401 || data.status === 400 || data.status === 500) {
+        console.error(data.message);
+        return;
+      }
+      return data.data;
+    } catch (error) {
+      console.error('Error fetching testimonials:', error);
+    }
+  }
+
   const scrollToSection = (id: string) => {
     const section = document.getElementById(id);
     if (section) {
@@ -354,6 +431,18 @@ export default function Component() {
               " />
               </a>
             </Card>
+            {
+              isSuperUser && (
+                <Card className="w-full   max-w-5xl flex p-4 justify-center items-center mx-auto">
+                <a href="/admin" className="text-sm group text-blue-600 hover:underline  hover:text-blue-700 flex flex-row gap-x-2   justify-center items-center italic   no-underline  font-medium  border-s-orange-700 underline-offset-4">
+              <span>Admin Dashboard </span>
+              <ArrowUpRightIcon  className="w-6 h-6
+              group-hover:animate-bounce
+              " />
+              </a>
+              </Card>
+              )
+            }
             </Card>
            
           </div>
@@ -382,10 +471,12 @@ export default function Component() {
           className="w-full py-16 md:py-16 lg:py-24 dark:bg-neutral-900 dark:text-[#f5f5f5]">
 
             <div className="container flex flex-col justify-center space-y-4 px-4 md:px-6">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-5xl/none">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl xl:text-5xl/none text-center">
                 T E S T I M O N I A L S
               </h2>
-              <Testimonial />
+              <Testimonial
+              testimonials={testimonials}
+               />
             </div>
             </section>
            

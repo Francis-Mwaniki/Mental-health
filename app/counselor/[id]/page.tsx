@@ -76,6 +76,8 @@ const [isUploadingError, setIsUploadingError] = useState(false)
 const [isUploadingSuccess, setIsUploadingSuccess] = useState(false)
 const [uploadErrorMessage, setUploadErrorMessage] = useState('')
 const [uploadSuccessMessage, setUploadSuccessMessage] = useState('')
+const [precheckCounselor, setPrecheckCounselor] = useState<boolean>(false)
+const [currentCounselorId, setCurrentCounselorId] = useState<string>('')
 const [image, setImage] = useState('')
 const [picUser, setPicUser] = useState<UserProfile>({
     profile_pic: '',
@@ -116,6 +118,23 @@ if (file) {
   reader.readAsDataURL(file)
 }
 }
+React.useEffect(() => {
+  const userId = localStorage.getItem('userId');
+  if (userId) {
+    setCurrentCounselorId(userId);
+  }
+}
+, [
+  router
+]);
+
+React.useEffect(() => {
+  if (currentCounselorId === id) {
+    setPrecheckCounselor(true);
+  }
+}
+, [currentCounselorId]);
+
 React.useEffect(() => {
   if (picUser.profile_pic) {
     setImage(picUser.profile_pic);
@@ -809,7 +828,7 @@ useEffect(() => {
       </div>
    
       {
-              isCounselor && (<>
+              precheckCounselor && (<>
 
 
            <Card className=" my-2 p-2">

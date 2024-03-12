@@ -138,3 +138,7 @@
   color: #f9fafb;
 }
 
+*{
+  scroll-behavior: smooth;
+  
+}
