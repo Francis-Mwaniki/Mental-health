@@ -37,7 +37,28 @@ export default function Home({params}:Props) {
   const [generatedRoomId, setGeneratedRoomId] = useState("");
   const [messages, setMessages] = useState<number>(50); 
   const [messageCount, setMessageCount] = useState<number>(50); 
+  const [currentSlowUser, setcurrentSlowUser] = useState("");
  
+
+  const handleSetSlowUser = () => {
+    if (currentSlowUser !== "") {
+      setcurrentUser(currentSlowUser);
+      localStorage.setItem("currentUser", currentSlowUser);
+    } else {
+      toast.error('Enter your name', {
+        style: {
+          border: '1px solid #713200',
+          padding: '16px',
+          color: '#713200',
+        },
+        iconTheme: {
+          primary: '#713200',
+          secondary: '#FFFAEE',
+        },
+      });
+
+    }
+  };
 
 
   const handleMessageSent = () => {
@@ -199,12 +220,14 @@ export default function Home({params}:Props) {
             className="border p-2 rounded-lg mr-2 text-black"
             type="text"
             placeholder="What's your name?"
-            onChange={(e) => setcurrentUser(e.target.value)}
-            value={currentUser}
+            onChange={(e) => setcurrentSlowUser(e.target.value)}
+            value={currentSlowUser}
           />
           <Button
             className=" text-white px-4 py-2 rounded-lg"
-            onClick={theCurrentUser}
+            onClick={
+              handleSetSlowUser
+            }
           >
             Join
           </Button>
