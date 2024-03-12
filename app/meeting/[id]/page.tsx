@@ -31,7 +31,7 @@ export default function Home({params}:Props) {
   const router = useRouter();
   const {id} = params;
   const [showChat, setShowChat] = useState(false);
-  const [userName, setUserName] = useState("");
+  const [currentUser, setcurrentUser] = useState("");
   const [showSpinner, setShowSpinner] = useState(false);
   const [roomId, setRoomId] = useState("");
   const [generatedRoomId, setGeneratedRoomId] = useState("");
@@ -104,23 +104,23 @@ export default function Home({params}:Props) {
   };
 
   useEffect(() => {
-    let user = localStorage.getItem("username");
+    let user = localStorage.getItem("currentUser");
     let isExpert = localStorage.getItem("isExpert");
 
     if (user ) {
-      setUserName(user);
+      setcurrentUser(user);
     }
 
 
   }
   , [
-    userName,
+    currentUser,
     router
   ]);
 
   const theCurrentUser = () => {
-    if (userName) {
-      setUserName(userName);
+    if (currentUser) {
+      setcurrentUser(currentUser);
     }
 
   }
@@ -129,8 +129,8 @@ export default function Home({params}:Props) {
   const socket = io("https://soket-9qe7.onrender.com");
 
   const handleJoin = () => {
-    if (userName !== ""  && roomId !== "") {
-      console.log(userName, "userName", roomId, "roomId");
+    if (currentUser !== ""  && roomId !== "") {
+      console.log(currentUser, "currentUser", roomId, "roomId");
       socket.emit("join_room", roomId);
       setShowSpinner(true);
       // You can remove this setTimeout and add your own logic
@@ -154,7 +154,7 @@ export default function Home({params}:Props) {
     }
   };
   // useEffect(() => {
-  //   localStorage.setItem('username', 'Guest');
+  //   localStorage.setItem('currentUser', 'Guest');
   // }
   // , []);
 
@@ -177,27 +177,46 @@ export default function Home({params}:Props) {
       {
         !showChat && (
           <div className="mb-4 flex flex-col justify-center items-center min-h-screen">
-        {
-          userName === "" && (
-            /* users propmt to enter their names */
+        {/* {
+          currentUser === "" && (
             <a 
             className="
             cursor-pointer
             text-white px-9 py-2 rounded-lg bg-black
             transition duration-300 ease-in-out hover:bg-gray-800
             "
-            onClick={() => setUserName("Guest")}
+            onClick={() => setcurrentUser("Guest")}
              >
-                Join Session 
+                Join as Guest 
             </a>
+          )
+        } */}
+        {
+          currentUser === "" && (
+            <div className="mb-4 text-center flex flex-row justify-center items-center">
+        
+          <Input
+            className="border p-2 rounded-lg mr-2 text-black"
+            type="text"
+            placeholder="What's your name?"
+            onChange={(e) => setcurrentUser(e.target.value)}
+            value={currentUser}
+          />
+          <Button
+            className=" text-white px-4 py-2 rounded-lg"
+            onClick={theCurrentUser}
+          >
+            Join
+          </Button>
+        </div>
           )
         }
         {
-          userName !== "" && (
+          currentUser !== "" && (
             <>
 
               <h3 className="text-2xl font-bold mb-4">
-            {userName ? `Welcome ${userName }` : "Welcome, Join a chat room"}
+            {currentUser ? `Welcome ${currentUser }` : "Welcome, Join a chat room"}
            
           </h3>
           <p className="text-sm text-gray-500 mb-4">
@@ -237,7 +256,7 @@ export default function Home({params}:Props) {
 
       
               {/* {
-          userName !== "" && (
+          currentUser !== "" && (
            <Button
             className=" text-white px-4 py-2 rounded-lg"
             onClick={generateUniqueId}
@@ -294,7 +313,7 @@ export default function Home({params}:Props) {
          <div style={{ display: showChat ? "block" : "none" }}>
           {
             messageCount > 0 && (
-                <ChatPage onMessageSent={handleMessageSent} socket={socket} roomId={roomId} username={userName } />
+                <ChatPage onMessageSent={handleMessageSent} socket={socket} roomId={roomId} username={currentUser } />
             )
           }
         

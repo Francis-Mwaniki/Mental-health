@@ -73,6 +73,8 @@ const [previewImg, setPreviewImg] = useState<string | ArrayBuffer | null>('')
 const [uploadProgress, setUploadProgress] = useState(0)
 const [cloudinaryImgUrl, setCloudinaryImgUrl] = useState('')
 const [isUploadingError, setIsUploadingError] = useState(false)
+const [precheckCounselor, setPrecheckCounselor] = useState<boolean>(false)
+const [currentCounselorId, setCurrentCounselorId] = useState<string>('')
 const [isUploadingSuccess, setIsUploadingSuccess] = useState(false)
 const [uploadErrorMessage, setUploadErrorMessage] = useState('')
 const [uploadSuccessMessage, setUploadSuccessMessage] = useState('')
@@ -202,6 +204,23 @@ const handleUploadSuccess = (uploadedUrl: string) => {
     setUploadSuccessMessage('');
   }, 3000);
 };
+
+React.useEffect(() => {
+  const userId = localStorage.getItem('userId');
+  if (userId) {
+    setCurrentCounselorId(userId);
+  }
+}
+, [
+  router
+]);
+
+React.useEffect(() => {
+  if (currentCounselorId === id) {
+    setPrecheckCounselor(true);
+  }
+}
+, [currentCounselorId]);
 
 useEffect(() => {
   if (localStorage.getItem('conselor')) {
@@ -809,7 +828,7 @@ useEffect(() => {
       </div>
    
       {
-              isCounselor && (<>
+              precheckCounselor && (<>
 
 
            {/* <Card className=" my-2 p-2">

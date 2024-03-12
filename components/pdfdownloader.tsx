@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
-import { Download, Edit, X } from 'lucide-react';
+import { Download, Edit, Loader, Trash2Icon, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from './ui/card';
 import { useRouter } from 'next/navigation';
@@ -37,6 +37,7 @@ const YourComponent: React.FC<CardProps> = ({ resource }) => {
  const [previewImg, setPreviewImg] = useState<string | ArrayBuffer | null>('')
  const [uploadProgress, setUploadProgress] = useState(0)
  const [cloudinaryImgUrl, setCloudinaryImgUrl] = useState('')
+ const [isDeleting, setIsDeleting] = useState(false)
  const [isUploadingError, setIsUploadingError] = useState(false)
  const [isUploadingSuccess, setIsUploadingSuccess] = useState(false)
  const [uploadErrorMessage, setUploadErrorMessage] = useState('')
@@ -46,6 +47,17 @@ const YourComponent: React.FC<CardProps> = ({ resource }) => {
      profile_pic: '',
    })
   const [isCounselor, setIsCounselor] = useState(false);
+
+  const scrollPositionRef = useRef(0);
+
+  useEffect(() => {
+    // Save the current scroll position on mount
+    scrollPositionRef.current = window.scrollY;
+
+    // Scroll to the saved position after the page has rendered
+    window.scrollTo(0, scrollPositionRef.current);
+  }, []);
+
   React.useEffect(() => {
     if (cloudinaryImgUrl) {
       setCloudinaryImgUrl(cloudinaryImgUrl);
@@ -100,6 +112,57 @@ const YourComponent: React.FC<CardProps> = ({ resource }) => {
       console.log(data.message);
     }
   }
+
+  const deleteResource = async (id: string) => {
+    setIsDeleting(true);
+    const res = await fetch(`/api/resources/delete`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id })
+    });
+  
+    const data = await res.json();
+    console.log(data);
+  
+    if (data.status === 200) {
+      console.log(data.message);
+      setIsDeleting(false);
+      setTimeout(() => {
+        toast.success('Succeded kudos!', {
+          style: {
+            border: '1px solid #713200',
+            padding: '16px',
+            color: '#713200',
+          },
+          duration: 4000,
+          iconTheme: {
+            primary: '#713200',
+            secondary: '#FFFAEE',
+          },
+          
+        });
+        setTimeout(() => {
+          window.location.reload();
+        }
+        , 600)
+      }, 4000);
+    }
+  
+    if (
+      data.status === 400 ||
+      data.status === 500 ||
+      data.status === 404 ||
+      data.status === 401 ||
+      data.status === 405
+    ) {
+      console.log(data.message);
+      setIsDeleting(false);
+    }
+  }
+
+
   const handleUploadSuccess = (uploadedUrl: string) => {
     setCloudinaryImgUrl(uploadedUrl);
     setIsUploadingSuccess(true);
@@ -376,17 +439,47 @@ const YourComponent: React.FC<CardProps> = ({ resource }) => {
                
              
                 <CardFooter>
-                 <a href={resource.secure_url} target="_blank">
-                <Button className="w-full
-                flex items-center justify-center
-                group
-                " type="submit">
-                    <span>
-                        Download
-                    </span>
-                    <Download className="group-hover:animate-bounce w-6 h-6 ml-2" />
-                </Button>
-                </a>
+                  <a   className='flex justify-center items-center  mx-auto gap-1'
+                  >
+
+<a 
+               
+               href={resource.secure_url} target="_blank">
+              <Button className="w-full
+              flex items-center justify-center
+              group
+              " type="submit">
+                  <span>
+                      Download
+                  </span>
+                  <Download className="group-hover:animate-bounce w-6 h-6 ml-2" />
+              </Button>
+             
+              </a>
+{
+                  isCounselor && (
+                    <Button
+                    disabled={isDeleting}
+                    onClick={() => {
+                      deleteResource(resource.id);
+                    }
+                    }
+                     className="w-full
+                    flex bg-red-600 items-center justify-center
+                    group
+                    " type="submit">
+                        <span>
+                            {
+                              isDeleting ? (<Loader className='animate-spin' />) : 'Delete'
+                            }
+                        </span>
+                        <Trash2Icon className="group-hover:animate-bounce w-6 h-6 ml-2" />
+                    </Button>
+                  )
+
+                }
+                  </a>
+              
                 </CardFooter>
             </Card>
     </div>

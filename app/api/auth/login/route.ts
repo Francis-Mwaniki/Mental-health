@@ -24,6 +24,7 @@ export async function POST(req: Request, res: Response) {
     const user = await prisma.counselor.findFirst({
         where: {
             email,
+            isApproved: true
             
         },
     });
