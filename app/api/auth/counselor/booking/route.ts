@@ -110,22 +110,7 @@ export async function POST(req: Request, res: Response) {
     }
 
 
-    const mail = {
-        to: user.email,
-        subject: 'New Booking',
-        from: 'francismwanik254@gmail.com', // Fill it with your validated email on SendGrid account
-        dynamicTemplateData: {
-            name: user.firstName,
-            email: user.email,
-            message: data.message,
-            counselorId: data.id,
-            hour: data.hour + ":00" + "-" + (parseInt(data.hour) + 1) + ":00",
-            shareMeetingLink: data.shareMeetingLink,
-            counselorName: `${user.firstName} ${user.lastName}`,
-            counselorEmail: user.email,
-        },
-        templateId: 'd-02f228bbf32e4eacac163c274f27c920',
-      };
+
         try {
           let info = await transporter.sendMail({
             from: '"WearsWorks 👻" <wearsworks@gmail.com>', // sender address
@@ -141,7 +126,7 @@ export async function POST(req: Request, res: Response) {
                 <p>Message: ${data.message}</p>
                 <p>Share Meeting Link: ${data.shareMeetingLink}</p>
 
-                
+
       
       
                 <p>Thank you for using our service!</p>
