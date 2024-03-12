@@ -24,7 +24,7 @@ try {
                 name,
                 description,
                 rating,
-                isApproved: true,
+                isApproved: false,
             },
         });
 

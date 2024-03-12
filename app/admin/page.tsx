@@ -54,7 +54,7 @@ const Dashboard = () => {
     const [isUpdatingCounselor, setIsUpdatingCounselor] = useState<boolean>(false);
     const [isUpdatingTestimonial, setIsUpdatingTestimonial] = useState<boolean>(false);
     const [isUpdatingPeerCounselor, setIsUpdatingPeerCounselor] = useState<boolean>(false);
-    const superUser ="65e0a6b9c56e8b89f6e0c106"
+    const superUser ="65f0b22d4d9ce34bc12a8e27"
     const router = useRouter();
 
     useEffect(() => {
